@@ -23,6 +23,7 @@ namespace PSO2emergencyToDiscord
         //private string discordURL;
         sendDiscord discord;
         getPSO2 pso2;
+        botRun bot;
 
         public MainWindow()
         {
@@ -43,6 +44,7 @@ namespace PSO2emergencyToDiscord
             }
 
             pso2 = new getPSO2();
+            bot = new botRun(discord,pso2);
         }
 
         //イベント
@@ -69,7 +71,7 @@ namespace PSO2emergencyToDiscord
         private void mainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             urlBox.Text = discord.getUrl();
-            log.writeLog(discord.getUrl());
+            //log.writeLog(discord.getUrl());
         }
     }
 }

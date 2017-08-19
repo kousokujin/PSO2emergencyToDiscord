@@ -13,6 +13,7 @@ namespace PSO2emergencyToDiscord
         const string url = "http://akakitune87.net/api/v1/pso2ema";
         WebClient wc;
         public dynamic dataParse;
+        public List<emgPSO2Data> emgArr;
 
         public getPSO2()
         {
@@ -37,18 +38,36 @@ namespace PSO2emergencyToDiscord
 
             //パース
             dataParse = DynamicJson.Parse(jsonRaw);
+            emgArr = new List<emgPSO2Data>();
 
-            //デバッグ用
-            /*
-            foreach(var post in dataParse)
+            if(emgArr != null && emgArr.Count != 0) //emgArrの要素をすべて削除
             {
-                System.Console.WriteLine(post.evant);
+                emgArr.Clear();
             }
-            System.Console.WriteLine();
 
-            */
+            foreach(var content in dataParse)
+            {
+                //var month = content.month;
+                DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 0, 0);
+                emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
+                emgArr.Add(tmp);
+            }
+            //System.Console.WriteLine();
+
 
             log.writeLog("緊急クエストの情報を取得しました。");
+        }
+    }
+
+    class emgPSO2Data
+    {
+        public DateTime time;
+        public string name;
+
+        public emgPSO2Data(DateTime t,string str)
+        {
+            this.time = t;
+            this.name = str;
         }
     }
 }

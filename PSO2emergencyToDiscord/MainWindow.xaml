@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PSO2emergencyToDiscord"
         mc:Ignorable="d"
-        Title="PSO2emargencyToDiscord" Height="232.526" Width="413.581" ResizeMode="NoResize" Loaded="mainWindow_Loaded">
+        Title="PSO2emargencyToDiscord" Height="232.526" Width="413.581" ResizeMode="CanMinimize" Loaded="mainWindow_Loaded">
     <Grid>
         <TextBox x:Name="postBox" HorizontalAlignment="Left" Height="65" Margin="10,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="294"/>
         <Button x:Name="postButton" Content="投稿" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="309,57,0,0" Height="65" Click="postButton_Click"/>

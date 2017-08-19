@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="botRun.cs" />
     <Compile Include="DynamicJson.cs" />
     <Compile Include="getPSO2.cs" />
     <Compile Include="log.cs" />
