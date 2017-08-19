@@ -45,8 +45,10 @@ namespace PSO2emergencyToDiscord
                 System.Console.WriteLine(post.evant);
             }
             System.Console.WriteLine();
+
             */
 
+            log.writeLog("緊急クエストの情報を取得しました。");
         }
     }
 }

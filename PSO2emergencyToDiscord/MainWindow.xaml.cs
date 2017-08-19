@@ -20,24 +20,56 @@ namespace PSO2emergencyToDiscord
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string discordURL;
+        //private string discordURL;
         sendDiscord discord;
         getPSO2 pso2;
 
         public MainWindow()
         {
             InitializeComponent();
-            
-            //見なかったことにして♡
-            discordURL = "https://discordapp.com/api/webhooks/348322898089345032/yzcePYWS5nxgRIMNTKKgFPxgOTnEQY9aPY3FXyj5VR_hnO_aivZciwAjgO0EORUUBIPF";
-            discord = new sendDiscord(discordURL);
+
+            log.writeLog("PSO2emergencyToDiscordが起動しました。");
+
+            //discordURL = "https://discordapp.com/api/webhooks/348322898089345032/yzcePYWS5nxgRIMNTKKgFPxgOTnEQY9aPY3FXyj5VR_hnO_aivZciwAjgO0EORUUBIPF";
+
+            //設定ファイルが存在するかしないか
+            if (System.IO.File.Exists("discordconf.xml"))
+            {
+                discord = new sendDiscord();
+            }
+            else
+            {
+                discord = new sendDiscord("");
+            }
+
             pso2 = new getPSO2();
         }
+
+        //イベント
 
         private void postButton_Click(object sender, RoutedEventArgs e) //投稿ボタンが押された時
         {
             discord.sendContent(postBox.Text);
             postBox.Text = "";
+        }
+
+        //urlボタン
+        private void urlButton_Click(object sender, RoutedEventArgs e)
+        {
+            discord.setUrl(urlBox.Text);
+            discord.save();
+        }
+
+        //再取得ボタン
+        private void reGetButton_Click(object sender, RoutedEventArgs e)
+        {
+            pso2.reGet();
+        }
+
+        private void mainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            urlBox.Text = discord.getUrl();
+            log.writeLog(discord.getUrl());
         }
     }
 }

@@ -5,10 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PSO2emergencyToDiscord"
         mc:Ignorable="d"
-        Title="PSO2emargencyToDiscord" Height="232.526" Width="413.581" ResizeMode="NoResize">
+        Title="PSO2emargencyToDiscord" Height="232.526" Width="413.581" ResizeMode="NoResize" Loaded="mainWindow_Loaded">
     <Grid>
-        <TextBox x:Name="postBox" HorizontalAlignment="Left" Height="52" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="300"/>
-        <Button x:Name="postButton" Content="投稿" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="315,10,0,0" Height="52" Click="postButton_Click"/>
+        <TextBox x:Name="postBox" HorizontalAlignment="Left" Height="65" Margin="10,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="294"/>
+        <Button x:Name="postButton" Content="投稿" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="309,57,0,0" Height="65" Click="postButton_Click"/>
+        <TextBox x:Name="urlBox" HorizontalAlignment="Left" Height="19" Margin="10,33,0,0" VerticalAlignment="Top" Width="294" RenderTransformOrigin="-0.058,0.068" TextWrapping="NoWrap"/>
+        <Button x:Name="urlButton" Content="設定" HorizontalAlignment="Left" Margin="309,32,0,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.08,-0.117" Click="urlButton_Click"/>
+        <Label Content="Webhooks URL" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,7,0,0" Width="112"/>
+        <Button x:Name="reGetButton" Content="再取得" HorizontalAlignment="Left" Margin="243,160,0,0" VerticalAlignment="Top" Width="146" Height="28" Click="reGetButton_Click"/>
 
     </Grid>
 </Window>
