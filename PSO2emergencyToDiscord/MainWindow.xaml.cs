@@ -47,7 +47,7 @@ namespace PSO2emergencyToDiscord
             bot = new botRun(discord,pso2);
         }
 
-        //イベント
+        //---------------------イベント-----------------------
 
         private void postButton_Click(object sender, RoutedEventArgs e) //投稿ボタンが押された時
         {
@@ -72,9 +72,11 @@ namespace PSO2emergencyToDiscord
         private void mainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             urlBox.Text = discord.getUrl();
+            versionLabel.Content = "Version 1.0.0.0";
             //log.writeLog(discord.getUrl());
         }
 
+        //閉じるボタン
         private void mainWindow_Closed(object sender, EventArgs e)
         {
             Application.Current.Shutdown();

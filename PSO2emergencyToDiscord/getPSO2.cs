@@ -20,7 +20,7 @@ namespace PSO2emergencyToDiscord
         public getPSO2()
         {
             wc = new WebClient();
-            wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+            //wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
             wc.Encoding = Encoding.UTF8;
 
             //緊急の情報を取得
@@ -38,6 +38,7 @@ namespace PSO2emergencyToDiscord
             //緊急の情報を取得
             string data = "\""+ dt.ToString("yyyyMMdd")+"\"";
 
+            wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
             string jsonRaw = wc.UploadString(url, data);
 
             //パース
