@@ -65,7 +65,8 @@ namespace PSO2emergencyToDiscord
         //再取得ボタン
         private void reGetButton_Click(object sender, RoutedEventArgs e)
         {
-            pso2.reGet();
+            //pso2.reGet();
+            bot.reloadEmg();
         }
 
         private void mainWindow_Loaded(object sender, RoutedEventArgs e)

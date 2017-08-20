@@ -22,7 +22,7 @@ namespace PSO2emergencyToDiscord
             wc.Encoding = Encoding.UTF8;
 
             //緊急の情報を取得
-            reGet();
+            //reGet();
 
         }
 
