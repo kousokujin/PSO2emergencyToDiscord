@@ -74,5 +74,10 @@ namespace PSO2emergencyToDiscord
             urlBox.Text = discord.getUrl();
             //log.writeLog(discord.getUrl());
         }
+
+        private void mainWindow_Closed(object sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
     }
 }

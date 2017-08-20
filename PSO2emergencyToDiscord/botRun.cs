@@ -22,7 +22,6 @@ namespace PSO2emergencyToDiscord
 
         //次の緊急の取得の時間
         DateTime nextReload;
-        bool reload;
 
         public botRun(sendDiscord discord,getPSO2 PSO2)
         {
@@ -154,7 +153,6 @@ namespace PSO2emergencyToDiscord
 
             log.writeLog(string.Format("次の緊急クエストの取得は{0}月{1}日{2}時{3}分です。",nextReload.Month,nextReload.Day,nextReload.Hour,nextReload.Minute));
         }
-
 
     }
 }

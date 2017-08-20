@@ -12,16 +12,19 @@ namespace PSO2emergencyToDiscord
     {
         string url; //WebHooksのURL
         WebClient wc;
+        dialog dag; //ダイアログ
 
         public sendDiscord()
         {
             //log.writeLog(url);
+            dag = new dialog();
             load();
             setDiscord();
         }
 
         public sendDiscord(string url)
         {
+            dag = new dialog();
             this.url = url;
             setDiscord();
         }
@@ -29,7 +32,8 @@ namespace PSO2emergencyToDiscord
         public void setDiscord()
         {
             wc = new WebClient();
-            wc.Headers.Add(HttpRequestHeader.ContentType, "application/json;charset=UTF-8");
+            //wc.Headers.Add(HttpRequestHeader.ContentType, "application/json;charset=UTF-8");
+            //wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
             wc.Encoding = Encoding.UTF8;
 
             log.writeLog("Discordに接続しました。");
@@ -37,13 +41,34 @@ namespace PSO2emergencyToDiscord
 
         public void sendContent(string text)
         {
-            var data = DynamicJson.Serialize(new
+            wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+
+            string data = DynamicJson.Serialize(new
             {
                 content = text
             });
 
-            wc.UploadString(url, data);
-            log.writeLog(string.Format("投稿「{0}」", text));
+            try
+            {
+                wc.UploadString(url, data);
+                log.writeLog(string.Format("投稿「{0}」", text));
+            }
+            catch (System.ArgumentException)
+            {
+                dag.windowTitle = "URLエラー";
+                dag.titleStr = "URLが正しくないです。";
+                dag.detail = "正しいURLを入力してください。";
+                dag.show();
+                log.writeLog(string.Format("正しくないURLです。URL:{0}」", url));
+            }
+            catch (System.Net.WebException ex)
+            {
+                dag.windowTitle = "投稿エラー";
+                dag.titleStr = "投稿に失敗しました。";
+                dag.detail = ex.Message;
+                dag.show();
+                log.writeLog(string.Format("投稿に失敗しました:{0}", ex.Message));
+            }
         }
 
         public void setUrl(string url)

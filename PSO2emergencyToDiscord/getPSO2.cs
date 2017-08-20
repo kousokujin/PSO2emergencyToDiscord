@@ -15,6 +15,8 @@ namespace PSO2emergencyToDiscord
         public dynamic dataParse;
         public List<emgPSO2Data> emgArr;
 
+        dialog dag;
+
         public getPSO2()
         {
             wc = new WebClient();
@@ -24,6 +26,7 @@ namespace PSO2emergencyToDiscord
             //緊急の情報を取得
             //reGet();
 
+            dag = new dialog();
         }
 
         //再取得
@@ -34,25 +37,25 @@ namespace PSO2emergencyToDiscord
 
             //緊急の情報を取得
             string data = "\""+ dt.ToString("yyyyMMdd")+"\"";
+
             string jsonRaw = wc.UploadString(url, data);
 
             //パース
             dataParse = DynamicJson.Parse(jsonRaw);
             emgArr = new List<emgPSO2Data>();
 
-            if(emgArr != null && emgArr.Count != 0) //emgArrの要素をすべて削除
+            if (emgArr != null && emgArr.Count != 0) //emgArrの要素をすべて削除
             {
                 emgArr.Clear();
             }
 
-            foreach(var content in dataParse)
+            foreach (var content in dataParse)
             {
                 //var month = content.month;
                 DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 0, 0);
                 emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
                 emgArr.Add(tmp);
             }
-            //System.Console.WriteLine();
 
 
             log.writeLog("緊急クエストの情報を取得しました。");

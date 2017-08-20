@@ -1,0 +1,15 @@
+﻿<Window x:Name="dialogWindow" x:Class="PSO2emergencyToDiscord.dialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PSO2emergencyToDiscord"
+        mc:Ignorable="d"
+        Title="dialog" Height="173.356" Width="388.235" ResizeMode="NoResize" Visibility="Hidden" Loaded="dialogWindow_Loaded">
+    <Grid>
+        <Label x:Name="titleLabel" Content="titleLabel" HorizontalAlignment="Left" Height="36" Margin="10,10,0,0" VerticalAlignment="Top" Width="362" FontSize="20"/>
+        <Label x:Name="detailLabel" Content="Label" HorizontalAlignment="Left" Height="52" Margin="10,46,0,0" VerticalAlignment="Top" Width="362"/>
+        <Button x:Name="okButton" Content="OK" HorizontalAlignment="Left" Height="31" Margin="238,90,0,0" VerticalAlignment="Top" Width="123" Click="okButton_Click"/>
+
+    </Grid>
+</Window>
