@@ -50,7 +50,7 @@ namespace PSO2emergencyToDiscord
                 emgArr.Clear();
             }
 
-            foreach (var content in dataParse)
+            foreach (dynamic content in dataParse)
             {
                 //var month = content.month;
                 DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 0, 0);

@@ -18,7 +18,7 @@ namespace PSO2emergencyToDiscord
         //次の通知の時間
         DateTime nextNofity;
         int nextInterval;
-        //bool notify;
+        bool notify;
 
         //次の緊急の取得の時間
         DateTime nextReload;
@@ -27,11 +27,11 @@ namespace PSO2emergencyToDiscord
         {
             this.discord = discord;
             this.pso2 = PSO2;
+            //notify = false;
 
             reloadEmg();
             getEmg();
             //calcNextNofity();
-            //notify = false;
             runTime();
         }
 
@@ -42,7 +42,7 @@ namespace PSO2emergencyToDiscord
                while (true)
                {
                     DateTime dt = DateTime.Now;
-                    if ((DateTime.Compare(dt, nextNofity) > 0))   //次の通知の時間を現在時刻が超えた時
+                    if ((DateTime.Compare(dt, nextNofity) > 0) && notify == true)   //次の通知の時間を現在時刻が超えた時
                     {
                         if (nextInterval == 0)
                         {
@@ -120,6 +120,7 @@ namespace PSO2emergencyToDiscord
         {
             DateTime dt = DateTime.Now;
             //DateTime dt = new DateTime(2017, 8, 20, 23, 0, 0);
+            notify = false;
 
             for (int i = 0; i < pso2.emgArr.Count(); i++)    //foreach文にしなきゃ(使命感)
             {
@@ -127,17 +128,24 @@ namespace PSO2emergencyToDiscord
                 {
                     nextEmgTime = pso2.emgArr[i].time;
                     nextEmg = pso2.emgArr[i].name;
+                    notify = true;
+                    log.writeLog(string.Format("次の緊急は{0}時{1}分の\"{2}\"です。", nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
                     break;
                 }
 
+                /*
                 if(i == pso2.emgArr.Count - 1)  //通知する緊急がなかった時
                 {
-                    nextEmgTime = pso2.emgArr[i].time;
-                    nextEmg = pso2.emgArr[i].name;
+                    //notify = false;
+                    log.writeLog("今日の緊急はすべて終了しました。");
                 }
+                */
             }
 
-            log.writeLog(string.Format("次の緊急は{0}時{1}分の\"{2}\"です。", nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
+            if(notify == false)
+            {
+                log.writeLog("通知する緊急クエストがありません。");
+            }
         }
 
         public void reloadEmg() //再取得をする。
