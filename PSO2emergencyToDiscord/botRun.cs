@@ -23,60 +23,108 @@ namespace PSO2emergencyToDiscord
         //次の緊急の取得の時間
         DateTime nextReload;
 
+        //バル・ロドス通知の有効・無効
+        public bool rodosNotify;
+        private bool rodosDay;  //ロドスの日かどうか
+
         public botRun(sendDiscord discord,getPSO2 PSO2)
         {
             this.discord = discord;
             this.pso2 = PSO2;
             //notify = false;
+            rodosNotify = false;
+            rodosDay = rodosCalculator.calcRodosDay(DateTime.Now);
 
             reloadEmg();
             getEmg();
             //calcNextNofity();
             runTime();
+            //printToday();
         }
 
         public async void runTime() //通知を行う(非同期)
         {
+            DateTime dt;
+            DateTime rodosRemind;
+
             await Task.Run(() =>
             {
                while (true)
                {
-                    DateTime dt = DateTime.Now;
+                    dt = DateTime.Now;
+                    
+                    //ロドスの日が終わるのを警告する時刻
+                    rodosRemind = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 30, 0);
+
                     if ((DateTime.Compare(dt, nextNofity) > 0) && notify == true)   //次の通知の時間を現在時刻が超えた時
                     {
                         if (nextInterval == 0)
                         {
-                            discord.sendContent(string.Format("【緊急開始】[{0:D2}:{1:D2}]{2}", nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
+                            discord.sendContent(string.Format("【緊急開始】{0,2:D2}:{1:D2} {2}", nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
                             getEmg();
                             calcNextNofity();
                         }
                         else
                         {
-                            discord.sendContent(string.Format("【{0}分前】[{1:D2}:{2:D2}]{3}", nextInterval, nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
+                            discord.sendContent(string.Format("【{0}分前】{1,2:D2}:{2:D2} {3}", nextInterval, nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
                             calcNextNofity();
                         }
 
                         //notify = false;
                     }
 
-                    if (DateTime.Compare(dt, nextReload) > 0) //緊急クエスト再取得
+                    if (DateTime.Compare(dt, nextReload) > 0) //緊急クエスト再取得・バル・ロドスの日の投稿
                     {
                         reloadEmg();
+                        rodosDay = rodosCalculator.calcRodosDay(dt);    //ロドスの日更新
+
                         string emgStr = "";
 
                         for (int i = 0; i < pso2.emgArr.Count; i++)
                         {
-                            emgStr += (string.Format("[{0}:{1:D2}]{2:D2}",
+                            emgStr += (string.Format("{0,2}:{1:D2} {2:D2}",
                                 pso2.emgArr[i].time.Hour,
                                 pso2.emgArr[i].time.Minute,
                                 pso2.emgArr[i].name) + Environment.NewLine);
                         }
 
-                        System.Threading.Thread.Sleep(10000);
+                        if (pso2.emgArr.Count > 0)  //緊急クエストが1つ以上ある時のみ(水曜日メンテ対策)
+                        {
+                            if (rodosDay == true && rodosNotify == true)  //ロドスの日
+                            {
+                                discord.sendContent(
+                                    string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr +
+                                    "なお、今日はデイリーオーダー「バル・ロドス討伐(VH)」の日です。"
+                                );
+                            }
+                            else
+                            {
+                                discord.sendContent(
+                                    string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr
+                                );
+                            }
+                        }
+                        else
+                        {
+                            if(rodosDay == true && rodosNotify == true)  //ロドスの日
+                            {
+                                discord.sendContent("今日はデイリーオーダー「バル・ロドス討伐(VH)」の日です。");
+                            }
 
+                        }
+                    }
+
+                    //23時30分になったらロドス警告
+                    if(rodosNotify && rodosDay && DateTime.Compare(dt,rodosRemind) < 0)
+                    {
+                        //次のロドスの計算
+                        DateTime nextRodos =rodosCalculator.nextRodosDay(DateTime.Now + new TimeSpan(24, 0, 0));
                         discord.sendContent(
-                            string.Format("{0}月{1}日の緊急クエストは以下の通りです。",dt.Month,dt.Day) + Environment.NewLine + emgStr
-                        );
+                            "デイリーオーダー「バル・ロドス討伐(VH)」の日があと30分で終わります。デイリーオーダーは受注しましたか？" +
+                            string.Format("次回のバル・ロドス討伐(VH)の日は{0}月{1}日です。",nextRodos.Month,nextRodos.Day)
+                            );
+
+                        rodosDay = false;   //この通知を出した時このアプリでロドスVHの日は終わる。
                     }
 
                     System.Threading.Thread.Sleep(10000);
@@ -160,6 +208,26 @@ namespace PSO2emergencyToDiscord
             nextReload =  dt + nextDay;
 
             log.writeLog(string.Format("次の緊急クエストの取得は{0}月{1}日{2}時{3}分です。",nextReload.Month,nextReload.Day,nextReload.Hour,nextReload.Minute));
+        }
+
+        //デバッグ用
+        private void printToday()
+        {
+            reloadEmg();
+            string emgStr = "";
+            DateTime dt = DateTime.Now;
+
+            for (int i = 0; i < pso2.emgArr.Count; i++)
+            {
+                emgStr += (string.Format("{0,2}:{1:D2} {2:D2}",
+                    pso2.emgArr[i].time.Hour,
+                    pso2.emgArr[i].time.Minute,
+                    pso2.emgArr[i].name) + Environment.NewLine);
+            }
+
+            discord.sendContent(
+                string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr
+            );
         }
 
     }

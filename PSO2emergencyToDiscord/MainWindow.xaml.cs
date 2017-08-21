@@ -72,7 +72,7 @@ namespace PSO2emergencyToDiscord
         private void mainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             urlBox.Text = discord.getUrl();
-            versionLabel.Content = "Version 1.0.0.0";
+            versionLabel.Content = "Version 1.0.1.0";
             //log.writeLog(discord.getUrl());
         }
 
@@ -80,6 +80,12 @@ namespace PSO2emergencyToDiscord
         private void mainWindow_Closed(object sender, EventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void rodosCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            bot.rodosNotify = (bool)rodosCheckBox.IsChecked;
+            System.Console.WriteLine("ロドス通知:{0}", bot.rodosNotify);
         }
     }
 }

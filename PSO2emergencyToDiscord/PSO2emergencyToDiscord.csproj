@@ -62,6 +62,7 @@
     <Compile Include="DynamicJson.cs" />
     <Compile Include="getPSO2.cs" />
     <Compile Include="log.cs" />
+    <Compile Include="rodosCalculator.cs" />
     <Compile Include="sendDiscord.cs" />
     <Page Include="dialog.xaml">
       <SubType>Designer</SubType>
