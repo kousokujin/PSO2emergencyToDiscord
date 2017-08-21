@@ -15,3 +15,13 @@ DiscordのWebHooksをつかいます。
 ## 予告緊急の取得など
 https://github.com/aki-lua87/PSO2ema
 を使ってます。
+
+## ダウンロード
+[ダウンロード](https://github.com/kousokujin/PSO2emergencyToDiscord/releases)
+
+## ライセンス
+Copyright (c) 2017 kousokujin
+
+Released under the [MIT license][]
+
+[MIT license]:http://opensource.org/licenses/mit-license.php "MIT license"
