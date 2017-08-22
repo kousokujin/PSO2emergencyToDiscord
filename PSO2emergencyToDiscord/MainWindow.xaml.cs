@@ -72,8 +72,7 @@ namespace PSO2emergencyToDiscord
         private void mainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             urlBox.Text = discord.getUrl();
-            versionLabel.Content = "Version 1.0.1.0";
-            //log.writeLog(discord.getUrl());
+            //rodosCheckBox.IsChecked = bot.rodosNotify;
         }
 
         //閉じるボタン

@@ -50,14 +50,16 @@ namespace PSO2emergencyToDiscord
                 emgArr.Clear();
             }
 
-            foreach (dynamic content in dataParse)
+            if (dataParse != null)
             {
-                //var month = content.month;
-                DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 0, 0);
-                emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
-                emgArr.Add(tmp);
+                foreach (dynamic content in dataParse)
+                {
+                    //var month = content.month;
+                    DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 0, 0);
+                    emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
+                    emgArr.Add(tmp);
+                }
             }
-
 
             log.writeLog("緊急クエストの情報を取得しました。");
         }

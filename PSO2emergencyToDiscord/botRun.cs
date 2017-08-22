@@ -32,7 +32,7 @@ namespace PSO2emergencyToDiscord
             this.discord = discord;
             this.pso2 = PSO2;
             //notify = false;
-            rodosNotify = false;
+            rodosNotify = true;
             rodosDay = rodosCalculator.calcRodosDay(DateTime.Now);
 
             reloadEmg();
@@ -115,15 +115,18 @@ namespace PSO2emergencyToDiscord
                     }
 
                     //23時30分になったらロドス警告
-                    if(rodosNotify && rodosDay && DateTime.Compare(dt,rodosRemind) < 0)
+                    if(rodosDay && DateTime.Compare(dt,rodosRemind) > 0)
                     {
                         //次のロドスの計算
                         DateTime nextRodos =rodosCalculator.nextRodosDay(DateTime.Now + new TimeSpan(24, 0, 0));
-                        discord.sendContent(
-                            "デイリーオーダー「バル・ロドス討伐(VH)」の日があと30分で終わります。デイリーオーダーは受注しましたか？" +
-                            string.Format("次回のバル・ロドス討伐(VH)の日は{0}月{1}日です。",nextRodos.Month,nextRodos.Day)
-                            );
 
+                        if (rodosNotify == true)
+                        {
+                            discord.sendContent(
+                                "デイリーオーダー「バル・ロドス討伐(VH)」の日があと30分で終わります。オーダーは受注しましたか？" + Environment.NewLine +
+                                string.Format("次回のバル・ロドス討伐(VH)の日は{0}月{1}日です。", nextRodos.Month, nextRodos.Day)
+                                );
+                        }
                         rodosDay = false;   //この通知を出した時このアプリでロドスVHの日は終わる。
                     }
 
