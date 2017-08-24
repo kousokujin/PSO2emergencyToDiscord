@@ -37,6 +37,7 @@ namespace PSO2emergencyToDiscord
 
             //緊急の情報を取得
             string data = "\""+ dt.ToString("yyyyMMdd")+"\"";
+            //string data = "\"" + "20170701" + "\"";
 
             wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
             string jsonRaw = wc.UploadString(url, data);
@@ -50,16 +51,21 @@ namespace PSO2emergencyToDiscord
                 emgArr.Clear();
             }
 
-            if (dataParse != null)
-            {
+            //if (dataParse != null)
+            //{
                 foreach (dynamic content in dataParse)
                 {
                     //var month = content.month;
+                    /*
+                        アキくんへ
+                        発生時だけでなく、発生分も返すとクーナライブに対応できそうです。
+                        クーナライブ→死
+                     */
                     DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 0, 0);
                     emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
                     emgArr.Add(tmp);
                 }
-            }
+            //}
 
             log.writeLog("緊急クエストの情報を取得しました。");
         }
