@@ -10,7 +10,7 @@ namespace PSO2emergencyToDiscord
 {
     class getPSO2
     {
-        const string url = "http://akakitune87.net/api/v1/pso2ema";
+        const string url = "https://akakitune87.net/api/v2/pso2ema";
         WebClient wc;
         public dynamic dataParse;
         public List<emgPSO2Data> emgArr;
@@ -35,9 +35,10 @@ namespace PSO2emergencyToDiscord
             //現在時刻を取得
             DateTime dt = DateTime.Now;
             bool live = false;  //ライブフラグ
+            string liveName = "";
 
             //緊急の情報を取得
-            string data = "\""+ dt.ToString("yyyyMMdd")+"\"";
+            string data = "\"" + dt.ToString("yyyyMMdd") + "\"";
             //string data = "\"" + "20170701" + "\"";
 
             wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
@@ -54,40 +55,44 @@ namespace PSO2emergencyToDiscord
 
             //if (dataParse != null)
             //{
-                foreach (dynamic content in dataParse)
-                {
+            foreach (dynamic content in dataParse)
+            {
                 //var month = content.month;
                 /*
                     アキくんへ
                     発生時だけでなく、発生分も返すとクーナライブに対応できそうです。
                     クーナライブ→死
+
+                    (๑•̀ㅂ•́)و✧
                  */
-                    if (content.evant == "ライブ")
+                if (((string)content.evant).Contains("ライブ"))
+                {
+                    live = true;
+                    liveName = (string)content.evant;
+                }
+                else
+                {
+                    if (live == true)
                     {
-                        live = true;
+                        DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, (int)content.minute - 30, 0);
+                        emgPSO2Data tmp = new emgPSO2Data(emgDT, $"{liveName}・{content.evant}");
+                        emgArr.Add(tmp);
                     }
                     else
                     {
-                        if (live == true)
-                        {
-                            DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 30, 0);
-                            emgPSO2Data tmp = new emgPSO2Data(emgDT, "ライブ・"+content.evant);
-                            emgArr.Add(tmp);
-                        }
-                        else
-                        {
-                            DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 0, 0);
-                            emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
-                            emgArr.Add(tmp);
+                        DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, (int)content.minute, 0);
+                        emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
+                        emgArr.Add(tmp);
 
-                        }
-                        live = false;
                     }
+                    live = false;
+                    liveName = "";
                 }
+            }
             //}
 
             string logStr = "緊急クエストの情報を取得しました。取得した緊急クエストは以下の通りです。\n";
-            foreach(emgPSO2Data cnt in emgArr)
+            foreach (emgPSO2Data cnt in emgArr)
             {
                 logStr += string.Format("[{0}]{1}\n", cnt.time.ToString("HH:mm"), cnt.name);
             }
@@ -101,7 +106,7 @@ namespace PSO2emergencyToDiscord
         public DateTime time;
         public string name;
 
-        public emgPSO2Data(DateTime t,string str)
+        public emgPSO2Data(DateTime t, string str)
         {
             this.time = t;
             this.name = str;
