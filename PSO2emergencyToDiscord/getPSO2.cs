@@ -71,13 +71,13 @@ namespace PSO2emergencyToDiscord
                         if (live == true)
                         {
                             DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 30, 0);
-                            emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
+                            emgPSO2Data tmp = new emgPSO2Data(emgDT, "ライブ・"+content.evant);
                             emgArr.Add(tmp);
                         }
                         else
                         {
                             DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 0, 0);
-                            emgPSO2Data tmp = new emgPSO2Data(emgDT, "ライブ・"+content.evant);
+                            emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
                             emgArr.Add(tmp);
 
                         }
