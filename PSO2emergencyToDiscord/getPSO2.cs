@@ -34,6 +34,7 @@ namespace PSO2emergencyToDiscord
         {
             //現在時刻を取得
             DateTime dt = DateTime.Now;
+            bool live = false;  //ライブフラグ
 
             //緊急の情報を取得
             string data = "\""+ dt.ToString("yyyyMMdd")+"\"";
@@ -55,19 +56,43 @@ namespace PSO2emergencyToDiscord
             //{
                 foreach (dynamic content in dataParse)
                 {
-                    //var month = content.month;
-                    /*
-                        アキくんへ
-                        発生時だけでなく、発生分も返すとクーナライブに対応できそうです。
-                        クーナライブ→死
-                     */
-                    DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 0, 0);
-                    emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
-                    emgArr.Add(tmp);
+                //var month = content.month;
+                /*
+                    アキくんへ
+                    発生時だけでなく、発生分も返すとクーナライブに対応できそうです。
+                    クーナライブ→死
+                 */
+                    if (content.evant == "ライブ")
+                    {
+                        live = true;
+                    }
+                    else
+                    {
+                        if (live == true)
+                        {
+                            DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 30, 0);
+                            emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
+                            emgArr.Add(tmp);
+                        }
+                        else
+                        {
+                            DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, 0, 0);
+                            emgPSO2Data tmp = new emgPSO2Data(emgDT, "ライブ・"+content.evant);
+                            emgArr.Add(tmp);
+
+                        }
+                        live = false;
+                    }
                 }
             //}
 
-            log.writeLog("緊急クエストの情報を取得しました。");
+            string logStr = "緊急クエストの情報を取得しました。取得した緊急クエストは以下の通りです。\n";
+            foreach(emgPSO2Data cnt in emgArr)
+            {
+                logStr += string.Format("[{0}]{1}\n", cnt.time.ToString("HH:mm"), cnt.name);
+            }
+
+            log.writeLog(logStr);
         }
     }
 
