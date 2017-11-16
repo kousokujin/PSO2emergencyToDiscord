@@ -75,17 +75,32 @@ namespace PSO2emergencyToDiscord
 
                     if (DateTime.Compare(dt, nextReload) > 0) //緊急クエスト再取得・バル・ロドスの日の投稿
                     {
-                        reloadEmg();
+                        //reloadEmg();
                         rodosDay = rodosCalculator.calcRodosDay(dt);    //ロドスの日更新
 
                         string emgStr = "";
 
+                        /*
                         for (int i = 0; i < pso2.emgArr.Count; i++)
                         {
                             emgStr += (string.Format("{0,2}:{1:D2} {2:D2}",
                                 pso2.emgArr[i].time.Hour,
                                 pso2.emgArr[i].time.Minute,
                                 pso2.emgArr[i].name) + Environment.NewLine);
+                        }
+                        */
+
+                        DateTime toDay00 = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
+                        DateTime toDay01 = new DateTime(dt.Year, dt.Month, dt.Day + 1, 0, 0, 0);
+                        foreach(emgPSO2Data d in pso2.emgArr)
+                        {
+                            if (DateTime.Compare(d.time, toDay00) >= 0 && DateTime.Compare(d.time, toDay01) < 0)
+                            {
+                                emgStr += (string.Format("{0,2}:{1:D2} {2:D2}",
+                                    d.time.Hour,
+                                    d.time.Minute,
+                                    d.name) + Environment.NewLine);
+                            }
                         }
 
                         if (pso2.emgArr.Count > 0)  //緊急クエストが1つ以上ある時のみ(水曜日メンテ対策)
@@ -173,6 +188,7 @@ namespace PSO2emergencyToDiscord
             //DateTime dt = new DateTime(2017, 8, 20, 23, 0, 0);
             notify = false;
 
+            /*
             for (int i = 0; i < pso2.emgArr.Count(); i++)    //foreach文にしなきゃ(使命感)
             {
                 if(DateTime.Compare(dt,pso2.emgArr[i].time) < 0)
@@ -183,14 +199,19 @@ namespace PSO2emergencyToDiscord
                     log.writeLog(string.Format("次の緊急は{0}時{1}分の\"{2}\"です。", nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
                     break;
                 }
+            }
+        */
 
-                /*
-                if(i == pso2.emgArr.Count - 1)  //通知する緊急がなかった時
+            foreach(emgPSO2Data d in pso2.emgArr)
+            {
+                if (DateTime.Compare(dt, d.time) < 0)
                 {
-                    //notify = false;
-                    log.writeLog("今日の緊急はすべて終了しました。");
+                    nextEmgTime = d.time;
+                    nextEmg = d.name;
+                    notify = true;
+                    log.writeLog(string.Format("次の緊急は{0}時{1}分の\"{2}\"です。", nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
+                    break;
                 }
-                */
             }
 
             if(notify == false)
@@ -214,6 +235,7 @@ namespace PSO2emergencyToDiscord
         }
 
         //デバッグ用
+        /*
         private void printToday()
         {
             reloadEmg();
@@ -232,6 +254,7 @@ namespace PSO2emergencyToDiscord
                 string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr
             );
         }
+        */
 
     }
 }
