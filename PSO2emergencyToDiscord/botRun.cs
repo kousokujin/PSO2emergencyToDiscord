@@ -23,6 +23,9 @@ namespace PSO2emergencyToDiscord
         //次の緊急の取得の時間
         DateTime nextReload;
 
+        //日付が変わった時に通知する時間
+        DateTime nextDayNtf;
+
         //バル・ロドス通知の有効・無効
         public bool rodosNotify;
         private bool rodosDay;  //ロドスの日かどうか
@@ -40,6 +43,9 @@ namespace PSO2emergencyToDiscord
             //calcNextNofity();
             runTime();
             //printToday();
+
+            nextDayNtf = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 1, 0, 0, 0);
+
         }
 
         public async void runTime() //通知を行う(非同期)
@@ -73,12 +79,12 @@ namespace PSO2emergencyToDiscord
                         //notify = false;
                     }
 
-                    if (DateTime.Compare(dt, nextReload) > 0) //緊急クエスト再取得・バル・ロドスの日の投稿
+                    if (DateTime.Compare(dt, nextDayNtf) > 0) //日付が変わったら実行される
                     {
                         //reloadEmg();
                         rodosDay = rodosCalculator.calcRodosDay(dt);    //ロドスの日更新
 
-                        string emgStr = "";
+                        string emgStr = genEmgStr();
 
                         /*
                         for (int i = 0; i < pso2.emgArr.Count; i++)
@@ -89,19 +95,6 @@ namespace PSO2emergencyToDiscord
                                 pso2.emgArr[i].name) + Environment.NewLine);
                         }
                         */
-
-                        DateTime toDay00 = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
-                        DateTime toDay01 = new DateTime(dt.Year, dt.Month, dt.Day + 1, 0, 0, 0);
-                        foreach(emgPSO2Data d in pso2.emgArr)
-                        {
-                            if (DateTime.Compare(d.time, toDay00) >= 0 && DateTime.Compare(d.time, toDay01) < 0)
-                            {
-                                emgStr += (string.Format("{0,2}:{1:D2} {2:D2}",
-                                    d.time.Hour,
-                                    d.time.Minute,
-                                    d.name) + Environment.NewLine);
-                            }
-                        }
 
                         if (pso2.emgArr.Count > 0)  //緊急クエストが1つ以上ある時のみ(水曜日メンテ対策)
                         {
@@ -127,6 +120,11 @@ namespace PSO2emergencyToDiscord
                             }
 
                         }
+
+                        //日付が変わった時の通知の日を更新
+                        nextDayNtf = new DateTime(dt.Year, dt.Month, dt.Day + 1, 0, 0, 0);
+
+
                     }
 
                     //23時30分になったらロドス警告
@@ -143,6 +141,16 @@ namespace PSO2emergencyToDiscord
                                 );
                         }
                         rodosDay = false;   //この通知を出した時このアプリでロドスVHの日は終わる。
+                    }
+
+                    //毎週水曜日17:00に緊急クエスト取得
+                    if(DateTime.Compare(dt,nextReload) > 0)
+                    {
+                        getEmg();
+                        string emgStr = genEmgStr();
+                        discord.sendContent(
+                                    string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr
+                                );
                     }
 
                     System.Threading.Thread.Sleep(10000);
@@ -227,11 +235,47 @@ namespace PSO2emergencyToDiscord
             calcNextNofity();
 
             //次の取得の時間を計算
-            DateTime dt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-            TimeSpan nextDay = new TimeSpan(24, 0, 0);
-            nextReload =  dt + nextDay;
+            //DateTime dt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            //TimeSpan nextDay = new TimeSpan(24, 0, 0);int getDays = 7-((int)dt.DayOfWeek+4)%7;    //この先の緊急を取得する日数
+            int getDays = 7 - ((int)DateTime.Now.DayOfWeek + 4) % 7;
+            if (getDays == 0)   //水曜日の時
+            {
+                DateTime dt1700 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 17, 0, 0);   //今日の17:00
+                if (DateTime.Compare(DateTime.Now, dt1700) > 0)
+                {
+                    getDays = 7;
+                }
+                else
+                {
+                    getDays = 0;
+                }
+            }
+            //nextReload =  dt + nextDay;
+            nextReload = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + getDays, 17, 0, 0);
 
             log.writeLog(string.Format("次の緊急クエストの取得は{0}月{1}日{2}時{3}分です。",nextReload.Month,nextReload.Day,nextReload.Hour,nextReload.Minute));
+        }
+
+        private string genEmgStr()  //今日の緊急の文字列を生成
+        {
+            string emgStr = "";
+            DateTime dt = DateTime.Now;
+
+            DateTime toDay00 = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
+            DateTime toDay01 = new DateTime(dt.Year, dt.Month, dt.Day + 1, 0, 0, 0);
+            foreach (emgPSO2Data d in pso2.emgArr)
+            {
+                if (DateTime.Compare(d.time, toDay00) >= 0 && DateTime.Compare(d.time, toDay01) < 0)
+                {
+                    emgStr += (string.Format("{0,2}:{1:D2} {2:D2}",
+                        d.time.Hour,
+                        d.time.Minute,
+                        d.name) + Environment.NewLine);
+                }
+            }
+
+            return emgStr;
+
         }
 
         //デバッグ用
