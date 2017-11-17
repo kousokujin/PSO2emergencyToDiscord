@@ -40,17 +40,19 @@ namespace PSO2emergencyToDiscord
             //string liveName = "";
             int getDays = 7-((int)dt.DayOfWeek+4)%7;    //この先の緊急を取得する日数
 
-            if (getDays == 0)   //水曜日の時
+            if (getDays == 7)   //水曜日の時
             {
-                DateTime dt1630 = new DateTime(dt.Year, dt.Month, dt.Day, 16, 30, 0);   //今日の16:30
-                if (DateTime.Compare(dt, dt1630) > 0)
+                DateTime dt1630 = new DateTime(dt.Year, dt.Month, dt.Day, 17, 00, 0);   //今日の17:00
+                if (DateTime.Compare(dt, dt1630) <= 0)
                 {
-                    getDays = 7;
+                    getDays = 0;
                 }
+                /*
                 else
                 {
                     getDays = 0;
                 }
+                */
             }
 
             if(emgArr == null)

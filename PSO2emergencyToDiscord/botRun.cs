@@ -96,6 +96,11 @@ namespace PSO2emergencyToDiscord
                         }
                         */
 
+                        /*
+                         　 2017/11/18日追記
+                            メモ:pso2.emgArrは水曜メンテナンス後に1週間分まとめて取得するようにしたので水曜日も空きにはならない。
+                            ToDo:その日の緊急の数を取得するメソッド(戻り値int)を作り、それが0ではない場合のみ通知を行うようにする。
+                        */
                         if (pso2.emgArr.Count > 0)  //緊急クエストが1つ以上ある時のみ(水曜日メンテ対策)
                         {
                             if (rodosDay == true && rodosNotify == true)  //ロドスの日
@@ -146,6 +151,7 @@ namespace PSO2emergencyToDiscord
                     //毎週水曜日17:00に緊急クエスト取得
                     if(DateTime.Compare(dt,nextReload) > 0)
                     {
+                        reloadEmg();
                         getEmg();
                         string emgStr = genEmgStr();
                         discord.sendContent(
@@ -238,17 +244,19 @@ namespace PSO2emergencyToDiscord
             //DateTime dt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
             //TimeSpan nextDay = new TimeSpan(24, 0, 0);int getDays = 7-((int)dt.DayOfWeek+4)%7;    //この先の緊急を取得する日数
             int getDays = 7 - ((int)DateTime.Now.DayOfWeek + 4) % 7;
-            if (getDays == 0)   //水曜日の時
+            if (getDays == 7)   //水曜日の時
             {
                 DateTime dt1700 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 17, 0, 0);   //今日の17:00
-                if (DateTime.Compare(DateTime.Now, dt1700) > 0)
+                if (DateTime.Compare(DateTime.Now, dt1700) <= 0)
                 {
-                    getDays = 7;
+                    getDays = 0;
                 }
+                /*
                 else
                 {
                     getDays = 0;
                 }
+                */
             }
             //nextReload =  dt + nextDay;
             nextReload = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + getDays, 17, 0, 0);
