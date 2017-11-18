@@ -99,9 +99,10 @@ namespace PSO2emergencyToDiscord
                         /*
                          　 2017/11/18日追記
                             メモ:pso2.emgArrは水曜メンテナンス後に1週間分まとめて取得するようにしたので水曜日も空きにはならない。
-                            ToDo:その日の緊急の数を取得するメソッド(戻り値int)を作り、それが0ではない場合のみ通知を行うようにする。
+                            ToDo:その日の緊急の数を取得するメソッド(戻り値int)を作り、それが0ではない場合のみ通知を行うようにする。 -> 完了
                         */
-                        if (pso2.emgArr.Count > 0)  //緊急クエストが1つ以上ある時のみ(水曜日メンテ対策)
+                        //if (pso2.emgArr.Count > 0)  //緊急クエストが1つ以上ある時のみ(水曜日メンテ対策)
+                        if(getEmgCount() > 0)
                         {
                             if (rodosDay == true && rodosNotify == true)  //ロドスの日
                             {
@@ -284,6 +285,24 @@ namespace PSO2emergencyToDiscord
 
             return emgStr;
 
+        }
+
+        private int getEmgCount()
+        {
+            DateTime toDay00 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            DateTime toDay01 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 1, 0, 0, 0);
+
+            int count = 0;
+
+            foreach (emgPSO2Data d in pso2.emgArr)
+            {
+                if (DateTime.Compare(d.time, toDay00) >= 0 && DateTime.Compare(d.time, toDay01) < 0)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         //デバッグ用
