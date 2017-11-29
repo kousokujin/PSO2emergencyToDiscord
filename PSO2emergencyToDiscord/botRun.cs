@@ -260,7 +260,7 @@ namespace PSO2emergencyToDiscord
                 */
             }
             //nextReload =  dt + nextDay;
-            nextReload = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + getDays, 17, 0, 0);
+            nextReload = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day , 17, 0, 0) + new TimeSpan(getDays,0,0,0);
 
             log.writeLog(string.Format("次の緊急クエストの取得は{0}月{1}日{2}時{3}分です。",nextReload.Month,nextReload.Day,nextReload.Hour,nextReload.Minute));
         }
