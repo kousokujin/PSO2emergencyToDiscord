@@ -44,7 +44,8 @@ namespace PSO2emergencyToDiscord
             runTime();
             //printToday();
 
-            nextDayNtf = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 1, 0, 0, 0);
+            nextDayNtf = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day , 0, 0, 0);
+            nextDayNtf += new TimeSpan(1, 0, 0, 0);
 
         }
 
@@ -271,7 +272,8 @@ namespace PSO2emergencyToDiscord
             DateTime dt = DateTime.Now;
 
             DateTime toDay00 = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
-            DateTime toDay01 = new DateTime(dt.Year, dt.Month, dt.Day + 1, 0, 0, 0);
+            DateTime toDay01 = new DateTime(dt.Year, dt.Month, dt.Day , 0, 0, 0);
+            toDay01 += new TimeSpan(1, 0, 0, 0);
             foreach (emgPSO2Data d in pso2.emgArr)
             {
                 if (DateTime.Compare(d.time, toDay00) >= 0 && DateTime.Compare(d.time, toDay01) < 0)
@@ -290,7 +292,8 @@ namespace PSO2emergencyToDiscord
         private int getEmgCount()
         {
             DateTime toDay00 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-            DateTime toDay01 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 1, 0, 0, 0);
+            DateTime toDay01 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            toDay01 += new TimeSpan(1, 0, 0, 0);
 
             int count = 0;
 

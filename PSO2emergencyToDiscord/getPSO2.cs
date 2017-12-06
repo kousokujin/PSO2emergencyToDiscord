@@ -84,9 +84,12 @@ namespace PSO2emergencyToDiscord
                 //{
                 foreach (dynamic content in dataParse)
                 {
-                    DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, (int)content.minute, 0);
-                    emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
-                    emgArr.Add(tmp);
+                    if (content.evant != "ライブ")
+                    {
+                        DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, (int)content.minute, 0);
+                        emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
+                        emgArr.Add(tmp);
+                    }
                 }
                 //}
             }
