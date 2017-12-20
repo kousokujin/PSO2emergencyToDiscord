@@ -44,7 +44,7 @@ namespace PSO2emergencyToDiscord
         */
 
         public string live;
-        bool liveEnable;
+        public bool liveEnable;
 
         public emgQuest(DateTime time, string evant) : base(time, evant)
         {

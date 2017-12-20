@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace PSO2emergencyToDiscord
 {
@@ -12,6 +13,7 @@ namespace PSO2emergencyToDiscord
         getPSO2 pso2;
 
         //次の緊急の情報
+        //Todo:次の通知のデータをevent型で管理するようにする
         string nextEmg;
         DateTime nextEmgTime;
 
@@ -222,8 +224,28 @@ namespace PSO2emergencyToDiscord
             {
                 if (DateTime.Compare(dt, d.evantTime) < 0 && d.GetType().Name == "emgQuest")
                 {
-                    nextEmgTime = d.evantTime;
-                    nextEmg = d.evantName;
+                    emgQuest emg = (emgQuest)d;
+                    nextEmgTime = emg.evantTime;
+
+                    if(emg.liveEnable == true)
+                    {
+                        if(Regex.IsMatch(emg.live, "^クーナスペシャルライブ「.*」") == true) //他のライブの時は無理
+                        {
+                            //もっといい方法がありそう
+                            string str = Regex.Replace(emg.live, "^クーナスペシャルライブ「", "");
+                            str = Regex.Replace(str, "」$", "");
+                            nextEmg = string.Format("{0}->{1}",str,emg.evantName);
+                        }
+                        else
+                        {
+                            nextEmg = string.Format("ライブ・{0}", emg.evantName);
+                        }
+                    }
+                    else
+                    {
+                        nextEmg = emg.evantName;
+                    }
+
                     notify = true;
                     log.writeLog(string.Format("次の緊急は{0}時{1}分の\"{2}\"です。", nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
                     break;

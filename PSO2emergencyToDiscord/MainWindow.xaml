@@ -13,7 +13,7 @@
         <Button x:Name="urlButton" Content="設定" HorizontalAlignment="Left" Margin="309,32,0,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.08,-0.117" Click="urlButton_Click"/>
         <Label Content="Webhooks URL" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,7,0,0" Width="112"/>
         <Button x:Name="reGetButton" Content="再取得" HorizontalAlignment="Left" Margin="243,160,0,0" VerticalAlignment="Top" Width="146" Height="28" Click="reGetButton_Click"/>
-        <Label x:Name="versionLabel" Content="Version 1.1.1.1" HorizontalAlignment="Left" Margin="10,161,0,0" VerticalAlignment="Top" Width="186"/>
+        <Label x:Name="versionLabel" Content="Version 1.1.2.0" HorizontalAlignment="Left" Margin="10,161,0,0" VerticalAlignment="Top" Width="186"/>
         <CheckBox x:Name="rodosCheckBox" Content="バル・ロドスVH通知" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top"  Click="rodosCheckBox_Click" IsChecked="true"/>
 
     </Grid>
