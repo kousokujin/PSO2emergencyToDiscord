@@ -70,7 +70,8 @@ namespace PSO2emergencyToDiscord
             for (int i = 0; i <= getDays; i++)
             {
                 DateTime getEmgTime = dt + new TimeSpan(i, 0, 0, 0);
-                string data = "\"" + getEmgTime.ToString("yyyyMMdd") + "\"";
+                //string data = "\"" + getEmgTime.ToString("yyyyMMdd") + "\"";
+                string data = string.Format("{{\"EvantDate\":\"{0}\"}}",getEmgTime.ToString("yyyyMMdd"));
                 //string data = "\"" + "20170701" + "\"";
 
                 wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
@@ -88,7 +89,7 @@ namespace PSO2emergencyToDiscord
 
                 foreach (dynamic content in dataParse)
                 {
-                    if (content.evantType == "ライブ")  //ライブの時は情報を保存
+                    if (content.eventType == "ライブ")  //ライブの時は情報を保存
                     {
                         livename = content.evant;
                         liveFlag = true;
@@ -96,7 +97,7 @@ namespace PSO2emergencyToDiscord
                     else
                     {
                         DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, (int)content.minute, 0);
-                        evant tmp;
+                        Event tmp;
 
                         if (liveFlag == true)
                         {
@@ -106,9 +107,9 @@ namespace PSO2emergencyToDiscord
                         else
                         {
                             
-                            switch (content.evantType)
+                            switch (content.eventType)
                             {
-                                case "緊急クエスト":
+                                case "緊急":
                                     tmp = new emgQuest(emgDT, content.evant);
                                     break;
                                 case "カジノイベント":
@@ -128,16 +129,17 @@ namespace PSO2emergencyToDiscord
             }
 
             string logStr = "緊急クエストの情報を取得しました。取得した緊急クエストは以下の通りです。\n";
-            foreach (emgPSO2Data cnt in emgArr)
+            foreach (Event cnt in emgArr)
             {
-                logStr += string.Format("[{0}]{1}\n", cnt.time.ToString("MM/dd HH:mm"), cnt.name);
+                logStr += string.Format("[{0}]{1}\n", cnt.evantTime.ToString("MM/dd HH:mm"), cnt.evantName);
             }
 
             log.writeLog(logStr);
         }
     }
 
-    class emgPSO2Data
+    /*
+    class emgPSO2Data   //廃止予定
     {
         public DateTime time;
         public string name;
@@ -149,30 +151,6 @@ namespace PSO2emergencyToDiscord
             this.name = str;
             //this.evantType = evantType;
         }
-        /*
-
-        public emgPSO2Data(DateTime t,string evantName,string evantType):this(t,evantName,type)
-        {
-            int type;
-
-            switch (evantType)
-            {
-                case "緊急":
-                    type = 1;
-                    break;
-                case "ライブ":
-                    type = 2;
-                    break;
-                case "カジノイベント":
-                    type = 3;
-                    break;
-                default:
-                    type = 0;
-                    break;
-            }
-
-            emgPSO2Data(t, evantName, type);
-        }
-        */
     }
+    */
 }

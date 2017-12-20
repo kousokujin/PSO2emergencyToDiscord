@@ -6,20 +6,21 @@ using System.Threading.Tasks;
 
 namespace PSO2emergencyToDiscord
 {
-    abstract class evant
+    abstract class Event
     {
         public DateTime evantTime;
         public string evantName;
 
-        public evant(DateTime time,string evant)
+        public Event(DateTime time,string evant)
         {
             this.evantTime = time;
             this.evantName = evant;
         }
     }
 
-    class emgQuest : evant  //緊急クエスト
+    class emgQuest : Event  //緊急クエスト
     {
+        /*
         public string live
         {
             get
@@ -28,11 +29,21 @@ namespace PSO2emergencyToDiscord
             }
             set
             {
-                liveEnable = (value != "");
+                //liveEnable = (value != "");
+                if (value != "")
+                {
+                    liveEnable = true;
+                }
+                else
+                {
+                    liveEnable = false;
+                }
                 live = value;
             }
         }
-        
+        */
+
+        public string live;
         bool liveEnable;
 
         public emgQuest(DateTime time, string evant) : base(time, evant)
@@ -44,10 +55,11 @@ namespace PSO2emergencyToDiscord
         public emgQuest(DateTime time,string evant,string liveName) : base(time, evant)
         {
             live = liveName;
+            liveEnable = true;
         }
     }
 
-    class casino : evant    //カジノイベント
+    class casino : Event    //カジノイベント
     {
         public casino(DateTime time) : base(time,"カジノイベント"){
 

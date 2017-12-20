@@ -218,12 +218,12 @@ namespace PSO2emergencyToDiscord
             }
         */
 
-            foreach(emgPSO2Data d in pso2.emgArr)
+            foreach(Event d in pso2.emgArr)
             {
-                if (DateTime.Compare(dt, d.time) < 0)
+                if (DateTime.Compare(dt, d.evantTime) < 0 && d.GetType().Name == "emgQuest")
                 {
-                    nextEmgTime = d.time;
-                    nextEmg = d.name;
+                    nextEmgTime = d.evantTime;
+                    nextEmg = d.evantName;
                     notify = true;
                     log.writeLog(string.Format("次の緊急は{0}時{1}分の\"{2}\"です。", nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
                     break;
@@ -274,14 +274,14 @@ namespace PSO2emergencyToDiscord
             DateTime toDay00 = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
             DateTime toDay01 = new DateTime(dt.Year, dt.Month, dt.Day , 0, 0, 0);
             toDay01 += new TimeSpan(1, 0, 0, 0);
-            foreach (emgPSO2Data d in pso2.emgArr)
+            foreach (Event d in pso2.emgArr)
             {
-                if (DateTime.Compare(d.time, toDay00) >= 0 && DateTime.Compare(d.time, toDay01) < 0)
+                if (DateTime.Compare(d.evantTime, toDay00) >= 0 && DateTime.Compare(d.evantTime, toDay01) < 0)
                 {
                     emgStr += (string.Format("{0,2}:{1:D2} {2:D2}",
-                        d.time.Hour,
-                        d.time.Minute,
-                        d.name) + Environment.NewLine);
+                        d.evantTime.Hour,
+                        d.evantTime.Minute,
+                        d.evantName) + Environment.NewLine);
                 }
             }
 
@@ -297,9 +297,9 @@ namespace PSO2emergencyToDiscord
 
             int count = 0;
 
-            foreach (emgPSO2Data d in pso2.emgArr)
+            foreach (Event d in pso2.emgArr)
             {
-                if (DateTime.Compare(d.time, toDay00) >= 0 && DateTime.Compare(d.time, toDay01) < 0)
+                if (DateTime.Compare(d.evantTime, toDay00) >= 0 && DateTime.Compare(d.evantTime, toDay01) < 0)
                 {
                     count++;
                 }
