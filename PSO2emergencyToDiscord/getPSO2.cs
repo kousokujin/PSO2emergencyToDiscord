@@ -11,7 +11,8 @@ namespace PSO2emergencyToDiscord
 {
     class getPSO2
     {
-        const string url = "https://akakitune87.net/api/v2/pso2ema";
+        //const string url = "https://akakitune87.net/api/v2/pso2ema";
+        const string url = "https://akakitune87.net/api/v3/pso2ema";
         WebClient wc;
         public dynamic dataParse;
         //public List<emgPSO2Data> emgArr;
@@ -82,12 +83,44 @@ namespace PSO2emergencyToDiscord
 
                 //if (dataParse != null)
                 //{
+                string livename = "";
+                bool liveFlag = false;
+
                 foreach (dynamic content in dataParse)
                 {
-                    if (content.evant != "ライブ")
+                    if (content.evantType == "ライブ")  //ライブの時は情報を保存
+                    {
+                        livename = content.evant;
+                        liveFlag = true;
+                    }
+                    else
                     {
                         DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, (int)content.minute, 0);
-                        emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
+                        evant tmp;
+
+                        if (liveFlag == true)
+                        {
+                            tmp = new emgQuest(emgDT, content.evant,livename);
+                            liveFlag = false;
+                        }
+                        else
+                        {
+                            
+                            switch (content.evantType)
+                            {
+                                case "緊急クエスト":
+                                    tmp = new emgQuest(emgDT, content.evant);
+                                    break;
+                                case "カジノイベント":
+                                    tmp = new casino(emgDT);
+                                    break;
+                                default:
+                                    tmp = new emgQuest(emgDT, "");
+                                    break;
+
+                            }
+                        }
+                        //emgPSO2Data tmp = new emgPSO2Data(emgDT, content.evant);
                         emgArr.Add(tmp);
                     }
                 }
@@ -108,11 +141,38 @@ namespace PSO2emergencyToDiscord
     {
         public DateTime time;
         public string name;
+        //public int evantType;
 
         public emgPSO2Data(DateTime t, string str)
         {
             this.time = t;
             this.name = str;
+            //this.evantType = evantType;
         }
+        /*
+
+        public emgPSO2Data(DateTime t,string evantName,string evantType):this(t,evantName,type)
+        {
+            int type;
+
+            switch (evantType)
+            {
+                case "緊急":
+                    type = 1;
+                    break;
+                case "ライブ":
+                    type = 2;
+                    break;
+                case "カジノイベント":
+                    type = 3;
+                    break;
+                default:
+                    type = 0;
+                    break;
+            }
+
+            emgPSO2Data(t, evantName, type);
+        }
+        */
     }
 }
