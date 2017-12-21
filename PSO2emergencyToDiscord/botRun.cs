@@ -14,8 +14,9 @@ namespace PSO2emergencyToDiscord
 
         //次の緊急の情報
         //Todo:次の通知のデータをevent型で管理するようにする
-        string nextEmg;
-        DateTime nextEmgTime;
+        //string nextEmg;
+        //DateTime nextEmgTime;
+        Event nextEmg;
 
         //次の通知の時間
         DateTime nextNofity;
@@ -69,13 +70,14 @@ namespace PSO2emergencyToDiscord
                     {
                         if (nextInterval == 0)
                         {
-                            discord.sendContent(string.Format("【緊急開始】{0,2:D2}:{1:D2} {2}", nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
+                            discord.sendContent(string.Format("【緊急開始】{0,2:D2}:{1:D2} {2}", nextEmg.eventTime.Hour, nextEmg.eventTime.Minute, nextEmg.eventName));
                             getEmg();
                             calcNextNofity();
                         }
                         else
                         {
-                            discord.sendContent(string.Format("【{0}分前】{1,2:D2}:{2:D2} {3}", nextInterval, nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
+                            string nextPOST = getLiveEmgStr((emgQuest)nextEmg);
+                            discord.sendContent(string.Format("【{0}分前】{1,2:D2}:{2:D2} {3}", nextInterval, nextEmg.eventTime.Hour, nextEmg.eventTime.Minute, nextPOST));
                             calcNextNofity();
                         }
 
@@ -175,23 +177,23 @@ namespace PSO2emergencyToDiscord
             TimeSpan ts30 = new TimeSpan(0, 30, 0);
             TimeSpan ts60 = new TimeSpan(1, 0, 0);
 
-            if(DateTime.Compare(dt+ts30,nextEmgTime) > 0) //次の通知は緊急発生時
+            if(DateTime.Compare(dt+ts30,nextEmg.eventTime) > 0) //次の通知は緊急発生時
             {
                 nextInterval = 0;
-                nextNofity = nextEmgTime;
+                nextNofity = nextEmg.eventTime;
             }
             else
             {
-                if (DateTime.Compare(dt, nextEmgTime - ts60) < 0) //次の通知は緊急の1時間前
+                if (DateTime.Compare(dt, nextEmg.eventTime - ts60) < 0) //次の通知は緊急の1時間前
                 {
                     nextInterval = 60;
-                    nextNofity = nextEmgTime - ts60;
+                    nextNofity = nextEmg.eventTime - ts60;
                 }
                 else
                 {   
                     //次の通知は緊急の30分前
                     nextInterval = 30;
-                    nextNofity = nextEmgTime - ts30;
+                    nextNofity = nextEmg.eventTime - ts30;
                 }
             }
 
@@ -222,11 +224,12 @@ namespace PSO2emergencyToDiscord
 
             foreach(Event d in pso2.emgArr)
             {
-                if (DateTime.Compare(dt, d.evantTime) < 0 && d.GetType().Name == "emgQuest")
+                if (DateTime.Compare(dt, d.eventTime) < 0 && d.GetType().Name == "emgQuest")
                 {
-                    emgQuest emg = (emgQuest)d;
-                    nextEmgTime = emg.evantTime;
+                    //emgQuest emg = (emgQuest)d;
+                    nextEmg = d;
 
+                    /*
                     if(emg.liveEnable == true)
                     {
                         if(Regex.IsMatch(emg.live, "^クーナスペシャルライブ「.*」") == true) //他のライブの時は無理
@@ -245,9 +248,10 @@ namespace PSO2emergencyToDiscord
                     {
                         nextEmg = emg.evantName;
                     }
+                    */
 
                     notify = true;
-                    log.writeLog(string.Format("次の緊急は{0}時{1}分の\"{2}\"です。", nextEmgTime.Hour, nextEmgTime.Minute, nextEmg));
+                    log.writeLog(string.Format("次の緊急は{0}時{1}分の\"{2}\"です。", nextEmg.eventTime.Hour, nextEmg.eventTime.Minute, nextEmg.eventName));
                     break;
                 }
             }
@@ -256,6 +260,26 @@ namespace PSO2emergencyToDiscord
             {
                 log.writeLog("通知する緊急クエストがありません。");
             }
+        }
+
+        private string getLiveEmgStr(emgQuest e)   //クーナライブがある時に使う
+        {
+            if(e.liveEnable == true)
+            {
+                if (Regex.IsMatch(e.live, "^クーナスペシャルライブ「.*」") == true) //他のライブの時は無理
+                {
+                    //もっといい方法がありそう
+                    string str = Regex.Replace(e.live, "^クーナスペシャルライブ「", "");
+                    str = Regex.Replace(str, "」$", "");
+                    return string.Format("{0}->{1}", str, e.eventName);
+                }
+                else
+                {
+                    return string.Format("ライブ・{0}", e.eventName);
+                }
+            }
+
+            return e.eventName;
         }
 
         public void reloadEmg() //再取得をする。
@@ -298,12 +322,12 @@ namespace PSO2emergencyToDiscord
             toDay01 += new TimeSpan(1, 0, 0, 0);
             foreach (Event d in pso2.emgArr)
             {
-                if (DateTime.Compare(d.evantTime, toDay00) >= 0 && DateTime.Compare(d.evantTime, toDay01) < 0)
+                if (DateTime.Compare(d.eventTime, toDay00) >= 0 && DateTime.Compare(d.eventTime, toDay01) < 0 && d.GetType().Name != "casino")
                 {
                     emgStr += (string.Format("{0,2}:{1:D2} {2:D2}",
-                        d.evantTime.Hour,
-                        d.evantTime.Minute,
-                        d.evantName) + Environment.NewLine);
+                        d.eventTime.Hour,
+                        d.eventTime.Minute,
+                        d.eventName) + Environment.NewLine);
                 }
             }
 
@@ -321,7 +345,7 @@ namespace PSO2emergencyToDiscord
 
             foreach (Event d in pso2.emgArr)
             {
-                if (DateTime.Compare(d.evantTime, toDay00) >= 0 && DateTime.Compare(d.evantTime, toDay01) < 0)
+                if (DateTime.Compare(d.eventTime, toDay00) >= 0 && DateTime.Compare(d.eventTime, toDay01) < 0)
                 {
                     count++;
                 }

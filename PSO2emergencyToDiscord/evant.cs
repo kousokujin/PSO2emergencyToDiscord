@@ -8,13 +8,13 @@ namespace PSO2emergencyToDiscord
 {
     abstract class Event
     {
-        public DateTime evantTime;
-        public string evantName;
+        public DateTime eventTime;
+        public string eventName;
 
         public Event(DateTime time,string evant)
         {
-            this.evantTime = time;
-            this.evantName = evant;
+            this.eventTime = time;
+            this.eventName = evant;
         }
     }
 

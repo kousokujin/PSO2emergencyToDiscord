@@ -131,7 +131,7 @@ namespace PSO2emergencyToDiscord
             string logStr = "緊急クエストの情報を取得しました。取得した緊急クエストは以下の通りです。\n";
             foreach (Event cnt in emgArr)
             {
-                logStr += string.Format("[{0}]{1}\n", cnt.evantTime.ToString("MM/dd HH:mm"), cnt.evantName);
+                logStr += string.Format("[{0}]{1}\n", cnt.eventTime.ToString("MM/dd HH:mm"), cnt.eventName);
             }
 
             log.writeLog(logStr);
