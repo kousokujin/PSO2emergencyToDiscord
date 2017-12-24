@@ -60,7 +60,7 @@
       <DependentUpon>dialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="DynamicJson.cs" />
-    <Compile Include="evant.cs" />
+    <Compile Include="event.cs" />
     <Compile Include="getPSO2.cs" />
     <Compile Include="log.cs" />
     <Compile Include="rodosCalculator.cs" />

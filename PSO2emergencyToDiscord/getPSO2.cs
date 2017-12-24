@@ -11,8 +11,8 @@ namespace PSO2emergencyToDiscord
 {
     class getPSO2
     {
-        //const string url = "https://akakitune87.net/api/v2/pso2ema";
-        const string url = "https://akakitune87.net/api/v3/pso2ema";
+        //const string url = "https://akakitune87.net/api/v3/pso2ema";
+        const string url = "https://akakitune87.net/api/v4/pso2emergency";  //V4対応
         WebClient wc;
         public dynamic dataParse;
         //public List<emgPSO2Data> emgArr;
@@ -71,7 +71,7 @@ namespace PSO2emergencyToDiscord
             {
                 DateTime getEmgTime = dt + new TimeSpan(i, 0, 0, 0);
                 //string data = "\"" + getEmgTime.ToString("yyyyMMdd") + "\"";
-                string data = string.Format("{{\"EvantDate\":\"{0}\"}}",getEmgTime.ToString("yyyyMMdd"));
+                string data = string.Format("{{\"EventDate\":\"{0}\"}}",getEmgTime.ToString("yyyyMMdd"));
                 //string data = "\"" + "20170701" + "\"";
 
                 wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
@@ -89,28 +89,28 @@ namespace PSO2emergencyToDiscord
 
                 foreach (dynamic content in dataParse)
                 {
-                    if (content.eventType == "ライブ")  //ライブの時は情報を保存
+                    if (content.EventType == "ライブ")  //ライブの時は情報を保存
                     {
-                        livename = content.evant;
+                        livename = content.EventName;
                         liveFlag = true;
                     }
                     else
                     {
-                        DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.month, (int)content.date, (int)content.hour, (int)content.minute, 0);
+                        DateTime emgDT = new DateTime(DateTime.Now.Year, (int)content.Month, (int)content.Date, (int)content.Hour, (int)content.Minute, 0);
                         Event tmp;
 
                         if (liveFlag == true)
                         {
-                            tmp = new emgQuest(emgDT, content.evant,livename);
+                            tmp = new emgQuest(emgDT, content.EventName,livename);
                             liveFlag = false;
                         }
                         else
                         {
                             
-                            switch (content.eventType)
+                            switch (content.EventType)
                             {
                                 case "緊急":
-                                    tmp = new emgQuest(emgDT, content.evant);
+                                    tmp = new emgQuest(emgDT, content.EventName);
                                     break;
                                 case "カジノイベント":
                                     tmp = new casino(emgDT);
