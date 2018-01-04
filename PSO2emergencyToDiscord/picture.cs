@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace PSO2emergencyToDiscord
 {
-    abstract class picture
+    abstract class picture : IDisposable
     {
         public string filename;
         public Bitmap img;
@@ -104,5 +104,6 @@ namespace PSO2emergencyToDiscord
         }
 
         abstract public void Trimming();
+        abstract public void Dispose();
     }
 }

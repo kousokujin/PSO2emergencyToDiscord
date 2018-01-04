@@ -43,7 +43,7 @@ namespace PSO2emergencyToDiscord
         public override void Trimming()
         {
             //int width = img.Width;
-            Rectangle rect = new Rectangle(0, 0, maxWidth, drawHeight);
+            Rectangle rect = new Rectangle(0, 0, img.Width, drawHeight);
             img = img.Clone(rect, img.PixelFormat);
         }
 
@@ -86,6 +86,14 @@ namespace PSO2emergencyToDiscord
             {
                 maxWidth = x + result.Item1;
             }
+        }
+
+        public override void Dispose()
+        {
+            fnt.Dispose();
+            fontColor.Dispose();
+            grp.Dispose();
+            img.Dispose();
         }
 
     }

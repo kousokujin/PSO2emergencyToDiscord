@@ -11,7 +11,7 @@ namespace PSO2emergencyToDiscord
     class sendDiscord
     {
         string url; //WebHooksのURL
-        WebClient wc;
+        //WebClient wc;
         dialog dag; //ダイアログ
 
         public sendDiscord()
@@ -31,17 +31,17 @@ namespace PSO2emergencyToDiscord
 
         public void setDiscord()
         {
-            wc = new WebClient();
+            //wc = new WebClient();
             //wc.Headers.Add(HttpRequestHeader.ContentType, "application/json;charset=UTF-8");
             //wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-            wc.Encoding = Encoding.UTF8;
+            //wc.Encoding = Encoding.UTF8;
 
             log.writeLog("Discordに接続しました。");
         }
 
         public async Task<string> sendContent(string text)
         {
-            wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+            //wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
 
             string data = DynamicJson.Serialize(new
             {
@@ -52,6 +52,9 @@ namespace PSO2emergencyToDiscord
                 string er = "NO_ERROR";
                 try
                 {
+                    WebClient wc = new WebClient();
+                    wc.Encoding = Encoding.UTF8;
+                    wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                     wc.UploadString(url, data);
                 }
                 catch (System.ArgumentException)
@@ -61,13 +64,6 @@ namespace PSO2emergencyToDiscord
                 catch (System.Net.WebException)
                 {
                     er = "POST_ERROR";
-                    /*
-                    dag.windowTitle = "投稿エラー";
-                    dag.titleStr = "投稿に失敗しました。";
-                    dag.detail = ex.Message;
-                    dag.show();
-                    log.writeLog(string.Format("投稿に失敗しました:{0}", ex.Message));
-                    */
                 }
 
                 return er;
@@ -98,6 +94,8 @@ namespace PSO2emergencyToDiscord
             //byte[] resData;
             //データを送信し、また受信する
             byte[] ts = await Task.Run(() => {
+                WebClient wc = new WebClient();
+                wc.Encoding = Encoding.UTF8;
                 byte [] resData = wc.UploadFile(url, filename);
                 return resData;
                 });

@@ -49,9 +49,10 @@ namespace PSO2emergencyToDiscord
 
         //---------------------イベント-----------------------
 
-        private async void postButton_Click(object sender, RoutedEventArgs e) //投稿ボタンが押された時
+        private void postButton_Click(object sender, RoutedEventArgs e) //投稿ボタンが押された時
         {
-            await discord.sendContent(postBox.Text);
+            bot.postText(postBox.Text);
+            //await discord.sendContent(postBox.Text);
             postBox.Text = "";
         }
 
@@ -92,6 +93,12 @@ namespace PSO2emergencyToDiscord
         {
             bot.picturepost = (bool)pictureCheckBox.IsChecked;
             //System.Console.WriteLine("画像投稿:{0}", bot.picturepost);
+        }
+
+        private void configPictureButton_Click(object sender, RoutedEventArgs e)
+        {
+            bot.postDaily();
+            bot.postEmg();
         }
     }
 }
