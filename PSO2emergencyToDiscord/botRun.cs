@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace PSO2emergencyToDiscord
 {
@@ -11,6 +12,11 @@ namespace PSO2emergencyToDiscord
     {
         sendDiscord discord;
         getPSO2 pso2;
+
+        //画像関係
+        todayEventImage teImage;
+        eventImage eImage;
+        simpleText st;
 
         //次の緊急の情報
         //Todo:次の通知のデータをevent型で管理するようにする
@@ -33,6 +39,9 @@ namespace PSO2emergencyToDiscord
         public bool rodosNotify;
         private bool rodosDay;  //ロドスの日かどうか
 
+        //画像でのPOSTのスイッチ
+        public bool picturepost;
+
         public botRun(sendDiscord discord,getPSO2 PSO2)
         {
             this.discord = discord;
@@ -42,13 +51,16 @@ namespace PSO2emergencyToDiscord
             rodosDay = rodosCalculator.calcRodosDay(DateTime.Now);
 
             reloadEmg();
-            getEmg();
+            //getEmg();
+            Task t = asyncReloademg();
             //calcNextNofity();
             runTime();
             //printToday();
 
             nextDayNtf = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day , 0, 0, 0);
             nextDayNtf += new TimeSpan(1, 0, 0, 0);
+
+            picturepost = false;
 
         }
 
@@ -70,14 +82,14 @@ namespace PSO2emergencyToDiscord
                     {
                         if (nextInterval == 0)
                         {
-                            discord.sendContent(string.Format("【緊急開始】{0,2:D2}:{1:D2} {2}", nextEmg.eventTime.Hour, nextEmg.eventTime.Minute, nextEmg.eventName));
+                            Task t = discord.sendContent(string.Format("【緊急開始】{0,2:D2}:{1:D2} {2}", nextEmg.eventTime.Hour, nextEmg.eventTime.Minute, nextEmg.eventName));
                             getEmg();
                             calcNextNofity();
                         }
                         else
                         {
                             string nextPOST = getLiveEmgStr((emgQuest)nextEmg);
-                            discord.sendContent(string.Format("【{0}分前】{1,2:D2}:{2:D2} {3}", nextInterval, nextEmg.eventTime.Hour, nextEmg.eventTime.Minute, nextPOST));
+                            Task t = discord.sendContent(string.Format("【{0}分前】{1,2:D2}:{2:D2} {3}", nextInterval, nextEmg.eventTime.Hour, nextEmg.eventTime.Minute, nextPOST));
                             calcNextNofity();
                         }
 
@@ -111,14 +123,14 @@ namespace PSO2emergencyToDiscord
                         {
                             if (rodosDay == true && rodosNotify == true)  //ロドスの日
                             {
-                                discord.sendContent(
+                                Task t = discord.sendContent(
                                     string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr +
                                     "なお、今日はデイリーオーダー「バル・ロドス討伐(VH)」の日です。"
                                 );
                             }
                             else
                             {
-                                discord.sendContent(
+                                Task t = discord.sendContent(
                                     string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr
                                 );
                             }
@@ -127,7 +139,7 @@ namespace PSO2emergencyToDiscord
                         {
                             if(rodosDay == true && rodosNotify == true)  //ロドスの日
                             {
-                                discord.sendContent("今日はデイリーオーダー「バル・ロドス討伐(VH)」の日です。");
+                                Task t = discord.sendContent("今日はデイリーオーダー「バル・ロドス討伐(VH)」の日です。");
                             }
 
                         }
@@ -146,7 +158,7 @@ namespace PSO2emergencyToDiscord
 
                         if (rodosNotify == true)
                         {
-                            discord.sendContent(
+                            Task t = discord.sendContent(
                                 "デイリーオーダー「バル・ロドス討伐(VH)」の日があと30分で終わります。オーダーは受注しましたか？" + Environment.NewLine +
                                 string.Format("次回のバル・ロドス討伐(VH)の日は{0}月{1}日です。", nextRodos.Month, nextRodos.Day)
                                 );
@@ -160,7 +172,7 @@ namespace PSO2emergencyToDiscord
                         reloadEmg();
                         getEmg();
                         string emgStr = genEmgStr();
-                        discord.sendContent(
+                        Task t = discord.sendContent(
                                     string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr
                                 );
                     }
@@ -229,27 +241,6 @@ namespace PSO2emergencyToDiscord
                     //emgQuest emg = (emgQuest)d;
                     nextEmg = d;
 
-                    /*
-                    if(emg.liveEnable == true)
-                    {
-                        if(Regex.IsMatch(emg.live, "^クーナスペシャルライブ「.*」") == true) //他のライブの時は無理
-                        {
-                            //もっといい方法がありそう
-                            string str = Regex.Replace(emg.live, "^クーナスペシャルライブ「", "");
-                            str = Regex.Replace(str, "」$", "");
-                            nextEmg = string.Format("{0}->{1}",str,emg.evantName);
-                        }
-                        else
-                        {
-                            nextEmg = string.Format("ライブ・{0}", emg.evantName);
-                        }
-                    }
-                    else
-                    {
-                        nextEmg = emg.evantName;
-                    }
-                    */
-
                     notify = true;
                     log.writeLog(string.Format("次の緊急は{0}時{1}分の\"{2}\"です。", nextEmg.eventTime.Hour, nextEmg.eventTime.Minute, nextEmg.eventName));
                     break;
@@ -312,6 +303,11 @@ namespace PSO2emergencyToDiscord
             log.writeLog(string.Format("次の緊急クエストの取得は{0}月{1}日{2}時{3}分です。",nextReload.Month,nextReload.Day,nextReload.Hour,nextReload.Minute));
         }
 
+        public async Task asyncReloademg()  //非同期で実行
+        {
+            await Task.Run(() => reloadEmg());
+        }
+
         private string genEmgStr()  //今日の緊急の文字列を生成
         {
             string emgStr = "";
@@ -351,30 +347,70 @@ namespace PSO2emergencyToDiscord
                 }
             }
 
+            
             return count;
         }
 
-        //デバッグ用
-        /*
-        private void printToday()
+        private Event[] getEmgArr()
         {
-            reloadEmg();
-            string emgStr = "";
-            DateTime dt = DateTime.Now;
+            Event[] output = new Event[getEmgCount()];
 
-            for (int i = 0; i < pso2.emgArr.Count; i++)
+            DateTime toDay00 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            DateTime toDay01 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            toDay01 += new TimeSpan(1, 0, 0, 0);
+
+            int i = 0;
+
+            foreach (Event d in pso2.emgArr)
             {
-                emgStr += (string.Format("{0,2}:{1:D2} {2:D2}",
-                    pso2.emgArr[i].time.Hour,
-                    pso2.emgArr[i].time.Minute,
-                    pso2.emgArr[i].name) + Environment.NewLine);
+                if (DateTime.Compare(d.eventTime, toDay00) >= 0 && DateTime.Compare(d.eventTime, toDay01) < 0)
+                {
+                    output[i] = d;
+                    i++;
+                }
             }
 
-            discord.sendContent(
-                string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr
-            );
+            return output;
         }
-        */
+
+        public void postDaily() //日付が変わったらやるPOST
+        {
+            DateTime dt = DateTime.Now;
+            if(picturepost == true)
+            {
+                Event[] todayEvent = getEmgArr();
+                teImage.drawString(string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day));
+                
+                foreach(Event env in todayEvent)
+                {
+                    string time = string.Format("{0,2}:{1:D2}", env.eventTime.Hour, env.eventTime.Minute);
+                    teImage.drawOneline(time, env.eventName);
+                }
+
+                if (rodosDay == true && rodosNotify == true)  //ロドスの日
+                {
+                    teImage.drawString("今日はデイリーオーダー「バル・ロドス討伐(VH)」の日です。");
+                }
+            }
+            else
+            {
+                string emgStr = genEmgStr();
+
+                if (rodosDay == true && rodosNotify == true)  //ロドスの日
+                {
+                    Task t = discord.sendContent(
+                        string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr +
+                        "なお、今日はデイリーオーダー「バル・ロドス討伐(VH)」の日です。"
+                    );
+                }
+                else
+                {
+                    Task t = discord.sendContent(
+                        string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr
+                    );
+                }
+            }
+        }
 
     }
 }

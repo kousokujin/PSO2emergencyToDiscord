@@ -48,19 +48,17 @@ namespace PSO2emergencyToDiscord
                 content = text
             });
 
-            ;
-
             string error = await Task.Run(() =>{
                 string er = "NO_ERROR";
                 try
                 {
                     wc.UploadString(url, data);
                 }
-                catch (System.ArgumentException ex)
+                catch (System.ArgumentException)
                 {
                     er = "URL_ERROR";
                 }
-                catch (System.Net.WebException ex)
+                catch (System.Net.WebException)
                 {
                     er = "POST_ERROR";
                     /*
@@ -75,15 +73,7 @@ namespace PSO2emergencyToDiscord
                 return er;
             });
 
-            return error;
-
-            /*
-            try
-            {
-                await Task.Run(() => wc.UploadString(url, data));
-                log.writeLog(string.Format("投稿「{0}」", text));
-            }
-            catch (System.ArgumentException)
+            if(error == "URL_ERROR")
             {
                 dag.windowTitle = "URLエラー";
                 dag.titleStr = "URLが正しくないです。";
@@ -91,15 +81,16 @@ namespace PSO2emergencyToDiscord
                 dag.show();
                 log.writeLog(string.Format("正しくないURLです。URL:{0}」", url));
             }
-            catch (System.Net.WebException ex)
+
+            if(error == "POST_ERROR")
             {
                 dag.windowTitle = "投稿エラー";
                 dag.titleStr = "投稿に失敗しました。";
-                dag.detail = ex.Message;
-                dag.show();
-                log.writeLog(string.Format("投稿に失敗しました:{0}", ex.Message));
+                dag.detail = "投稿に失敗しました。";
+                log.writeLog(string.Format("投稿に失敗しました。"));
             }
-            */
+
+            return error;
         }
 
         public async Task<string> sendPicture(string filename)

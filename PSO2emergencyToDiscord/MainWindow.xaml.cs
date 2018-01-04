@@ -49,9 +49,9 @@ namespace PSO2emergencyToDiscord
 
         //---------------------イベント-----------------------
 
-        private void postButton_Click(object sender, RoutedEventArgs e) //投稿ボタンが押された時
+        private async void postButton_Click(object sender, RoutedEventArgs e) //投稿ボタンが押された時
         {
-            discord.sendContent(postBox.Text);
+            await discord.sendContent(postBox.Text);
             postBox.Text = "";
         }
 
@@ -66,7 +66,8 @@ namespace PSO2emergencyToDiscord
         private void reGetButton_Click(object sender, RoutedEventArgs e)
         {
             //pso2.reGet();
-            bot.reloadEmg();
+            //bot.reloadEmg();
+            Task t = bot.asyncReloademg();
         }
 
         private void mainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -84,7 +85,13 @@ namespace PSO2emergencyToDiscord
         private void rodosCheckBox_Click(object sender, RoutedEventArgs e)
         {
             bot.rodosNotify = (bool)rodosCheckBox.IsChecked;
-            System.Console.WriteLine("ロドス通知:{0}", bot.rodosNotify);
+            //System.Console.WriteLine("ロドス通知:{0}", bot.rodosNotify);
+        }
+
+        private void pictureCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            bot.picturepost = (bool)pictureCheckBox.IsChecked;
+            //System.Console.WriteLine("画像投稿:{0}", bot.picturepost);
         }
     }
 }
