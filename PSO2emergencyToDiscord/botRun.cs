@@ -253,7 +253,7 @@ namespace PSO2emergencyToDiscord
             }
         }
 
-        private string getLiveEmgStr(emgQuest e)   //クーナライブがある時に使う
+        private string getLiveEmgStr(emgQuest e,string section = "->")   //クーナライブがある時に使う
         {
             if(e.liveEnable == true)
             {
@@ -262,7 +262,7 @@ namespace PSO2emergencyToDiscord
                     //もっといい方法がありそう
                     string str = Regex.Replace(e.live, "^クーナスペシャルライブ「", "");
                     str = Regex.Replace(str, "」$", "");
-                    return string.Format("{0}->{1}", str, e.eventName);
+                    return string.Format("{0}{1}{2}", str,section,e.eventName);
                 }
                 else
                 {
@@ -391,6 +391,10 @@ namespace PSO2emergencyToDiscord
                 {
                     teImage.drawString("今日はデイリーオーダー「バル・ロドス討伐(VH)」の日です。");
                 }
+
+                teImage.Trimming();
+                teImage.saveImage();
+                Task t = discord.sendPicture(teImage.filename);
             }
             else
             {
@@ -409,6 +413,47 @@ namespace PSO2emergencyToDiscord
                         string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr
                     );
                 }
+            }
+        }
+
+        public void postEmg()
+        {
+            if (nextInterval == 0)
+            {
+                if (picturepost == true)
+                {
+                    string time = string.Format("{0,2}:{1:D2}", nextEmg.eventTime.Hour, nextEmg.eventTime.Minute);
+                    eImage.drawText("【緊急開始】", time, nextEmg.eventName);
+
+                    eImage.Trimming();
+                    eImage.saveImage();
+                    Task t = discord.sendPicture(eImage.filename);
+                }
+                else
+                {
+                    Task t = discord.sendContent(string.Format("【緊急開始】{0,2:D2}:{1:D2} {2}", nextEmg.eventTime.Hour, nextEmg.eventTime.Minute, nextEmg.eventName));
+                }
+                getEmg();
+                calcNextNofity();
+            }
+            else
+            {
+                if (picturepost == true)
+                {
+                    string nextPOST = getLiveEmgStr((emgQuest)nextEmg, "\n");
+                    string time = string.Format("{0,2}:{1:D2}", nextEmg.eventTime.Hour, nextEmg.eventTime.Minute);
+                    eImage.drawText(string.Format("【{0}分前】",nextInterval), time, nextPOST);
+
+                    eImage.Trimming();
+                    eImage.saveImage();
+                    Task t = discord.sendPicture(eImage.filename);
+                }
+                else
+                {
+                    string nextPOST = getLiveEmgStr((emgQuest)nextEmg);
+                    Task t = discord.sendContent(string.Format("【{0}分前】{1,2:D2}:{2:D2} {3}", nextInterval, nextEmg.eventTime.Hour, nextEmg.eventTime.Minute, nextPOST));
+                }
+                calcNextNofity();
             }
         }
 
