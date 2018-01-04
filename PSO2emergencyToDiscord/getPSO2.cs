@@ -136,6 +136,11 @@ namespace PSO2emergencyToDiscord
 
             log.writeLog(logStr);
         }
+
+        public async Task asyncReget()  //取得を非同期で行う
+        {
+            await Task.Run(() => reGet());
+        }
     }
 
     /*

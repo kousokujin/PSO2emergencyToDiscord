@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,10 +62,14 @@
     </Compile>
     <Compile Include="DynamicJson.cs" />
     <Compile Include="event.cs" />
+    <Compile Include="eventImage.cs" />
     <Compile Include="getPSO2.cs" />
     <Compile Include="log.cs" />
+    <Compile Include="picture.cs" />
     <Compile Include="rodosCalculator.cs" />
     <Compile Include="sendDiscord.cs" />
+    <Compile Include="simpleText.cs" />
+    <Compile Include="todayEventImage.cs" />
     <Page Include="dialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

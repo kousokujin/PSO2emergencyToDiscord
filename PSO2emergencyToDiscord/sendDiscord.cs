@@ -39,7 +39,7 @@ namespace PSO2emergencyToDiscord
             log.writeLog("Discordに接続しました。");
         }
 
-        public void sendContent(string text)
+        public async Task<string> sendContent(string text)
         {
             wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
 
@@ -48,9 +48,39 @@ namespace PSO2emergencyToDiscord
                 content = text
             });
 
+            ;
+
+            string error = await Task.Run(() =>{
+                string er = "NO_ERROR";
+                try
+                {
+                    wc.UploadString(url, data);
+                }
+                catch (System.ArgumentException ex)
+                {
+                    er = "URL_ERROR";
+                }
+                catch (System.Net.WebException ex)
+                {
+                    er = "POST_ERROR";
+                    /*
+                    dag.windowTitle = "投稿エラー";
+                    dag.titleStr = "投稿に失敗しました。";
+                    dag.detail = ex.Message;
+                    dag.show();
+                    log.writeLog(string.Format("投稿に失敗しました:{0}", ex.Message));
+                    */
+                }
+
+                return er;
+            });
+
+            return error;
+
+            /*
             try
             {
-                wc.UploadString(url, data);
+                await Task.Run(() => wc.UploadString(url, data));
                 log.writeLog(string.Format("投稿「{0}」", text));
             }
             catch (System.ArgumentException)
@@ -69,6 +99,21 @@ namespace PSO2emergencyToDiscord
                 dag.show();
                 log.writeLog(string.Format("投稿に失敗しました:{0}", ex.Message));
             }
+            */
+        }
+
+        public async Task<string> sendPicture(string filename)
+        {
+            //byte[] resData;
+            //データを送信し、また受信する
+            byte[] ts = await Task.Run(() => {
+                byte [] resData = wc.UploadFile(url, filename);
+                return resData;
+                });
+            //受信したデータを表示する
+            string resText = System.Text.Encoding.UTF8.GetString(ts);
+
+            return resText;
         }
 
         public void setUrl(string url)
