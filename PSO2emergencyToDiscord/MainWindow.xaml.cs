@@ -25,13 +25,14 @@ namespace PSO2emergencyToDiscord
         getPSO2 pso2;
         botRun bot;
 
+        //pictureConfWin confWin;
+
+
         public MainWindow()
         {
             InitializeComponent();
 
             log.writeLog("PSO2emergencyToDiscordが起動しました。");
-
-            //discordURL = "https://discordapp.com/api/webhooks/348322898089345032/yzcePYWS5nxgRIMNTKKgFPxgOTnEQY9aPY3FXyj5VR_hnO_aivZciwAjgO0EORUUBIPF";
 
             //設定ファイルが存在するかしないか
             if (System.IO.File.Exists("discordconf.xml"))
@@ -45,6 +46,7 @@ namespace PSO2emergencyToDiscord
 
             pso2 = new getPSO2();
             bot = new botRun(discord,pso2);
+
         }
 
         //---------------------イベント-----------------------
@@ -97,8 +99,9 @@ namespace PSO2emergencyToDiscord
 
         private void configPictureButton_Click(object sender, RoutedEventArgs e)
         {
-            bot.postDaily();
-            bot.postEmg();
+
+            pictureConfWin confWin = new pictureConfWin(bot.cp);
+            confWin.Show();
         }
     }
 }

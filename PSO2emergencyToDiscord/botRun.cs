@@ -15,7 +15,7 @@ namespace PSO2emergencyToDiscord
         getPSO2 pso2;
 
         //画像関係
-        int width;
+        public configPicture cp;
         int height;
         Font fnt;
         Brush fontColor;
@@ -41,6 +41,7 @@ namespace PSO2emergencyToDiscord
         //画像でのPOSTのスイッチ
         public bool picturepost;
 
+
         public botRun(sendDiscord discord,getPSO2 PSO2)
         {
             this.discord = discord;
@@ -59,10 +60,9 @@ namespace PSO2emergencyToDiscord
             nextDayNtf = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day , 0, 0, 0);
             nextDayNtf += new TimeSpan(1, 0, 0, 0);
 
-            width = 600;
-            height = 800;
-            fnt = new Font("MS ゴシック", 20);
-            fontColor = Brushes.White;
+            loadPicture();
+            fnt = new Font(cp.fontname, cp.fontsize);
+            fontColor = new SolidBrush(Color.FromArgb(255, cp.r, cp.g, cp.b));
 
         }
 
@@ -368,13 +368,14 @@ namespace PSO2emergencyToDiscord
         public void postDaily() //日付が変わったらやるPOST
         {
             string fn = "deilypost.png";
-            todayEventImage teImage = new todayEventImage(width,height,fn,fnt,fontColor);
+            todayEventImage teImage = new todayEventImage(cp.width,height,fn,fnt,fontColor);
             DateTime dt = DateTime.Now;
             if(picturepost == true)
             {
                 if (getEmgCount() > 0)
                 {
                     Event[] todayEvent = getEmgArr();
+                    teImage.setParameter(cp.field1, 0, 0);
                     teImage.drawString(string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day));
 
                     foreach (Event env in todayEvent)
@@ -439,7 +440,8 @@ namespace PSO2emergencyToDiscord
                 if (picturepost == true)
                 {
                     string fn = "postEmg.png";
-                    eventImage eImage = new eventImage(width, height, fn, fnt,fontColor);
+                    eventImage eImage = new eventImage(cp.width, height, fn, fnt,fontColor);
+                    eImage.setParameter(cp.field2, 0, cp.field3, 0, 0);
 
                     string time = string.Format("{0,2}:{1:D2}", nextEmg.eventTime.Hour, nextEmg.eventTime.Minute);
                     eImage.drawText("【緊急開始】", time, nextEmg.eventName);
@@ -462,7 +464,8 @@ namespace PSO2emergencyToDiscord
                 if (picturepost == true)
                 {
                     string fn = "postEmg.png";
-                    eventImage eImage = new eventImage(width, height, fn, fnt, fontColor);
+                    eventImage eImage = new eventImage(cp.width, height, fn, fnt, fontColor);
+                    eImage.setParameter(cp.field2, 0, cp.field3, 0, 0);
 
                     string nextPOST = getLiveEmgStr((emgQuest)nextEmg, "\n");
                     string time = string.Format("{0,2}:{1:D2}", nextEmg.eventTime.Hour, nextEmg.eventTime.Minute);
@@ -488,7 +491,7 @@ namespace PSO2emergencyToDiscord
             if(picturepost == true)
             {
                 string fn = "text.png";
-                simpleText st = new simpleText(width, height, fn, fnt,fontColor);
+                simpleText st = new simpleText(cp.width, height, fn, fnt,fontColor);
 
                 st.drawText(str);
                 st.Trimming();
@@ -500,6 +503,41 @@ namespace PSO2emergencyToDiscord
             else
             {
                 Task t = discord.sendContent(str);
+            }
+        }
+
+        public void savePicture()
+        {
+            string filename = "Picture.xml";
+            xmlIO.saveObject(cp, filename);
+
+        }
+
+        public void loadPicture()
+        {
+            string filename = "Picture.xml";
+            if (System.IO.File.Exists(filename) == false)
+            {
+                cp = new configPicture();
+                cp.fontname = "MS ゴシック";
+                cp.fontsize = 20;
+
+                cp.r = 255;
+                cp.g = 255;
+                cp.b = 255;
+
+                cp.width = 600;
+                cp.field1 = 100;
+                cp.field2 = 130;
+                cp.field3 = 130;
+
+                xmlIO.saveObject(cp, filename);
+            }
+            else
+            {
+                //もっといい方法がありそう
+                cp = new configPicture();
+                cp = (configPicture)xmlIO.loadObject(filename, cp.GetType());
             }
         }
 
