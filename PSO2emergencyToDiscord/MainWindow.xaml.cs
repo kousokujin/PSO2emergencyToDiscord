@@ -25,7 +25,7 @@ namespace PSO2emergencyToDiscord
         getPSO2 pso2;
         botRun bot;
 
-        //pictureConfWin confWin;
+        pictureConfWin confWin;
 
 
         public MainWindow()
@@ -99,9 +99,15 @@ namespace PSO2emergencyToDiscord
 
         private void configPictureButton_Click(object sender, RoutedEventArgs e)
         {
-
-            pictureConfWin confWin = new pictureConfWin(bot.cp);
-            confWin.Show();
+            if (confWin == null)
+            {
+                confWin = new pictureConfWin(bot);
+                confWin.Show();
+            }
+            else
+            {
+                confWin.Visibility = Visibility.Visible;
+            }
         }
     }
 }

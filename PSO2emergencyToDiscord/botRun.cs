@@ -16,7 +16,7 @@ namespace PSO2emergencyToDiscord
 
         //画像関係
         public configPicture cp;
-        int height;
+        int height = 1000;
         Font fnt;
         Brush fontColor;
 
@@ -62,6 +62,7 @@ namespace PSO2emergencyToDiscord
 
             loadPicture();
             fnt = new Font(cp.fontname, cp.fontsize);
+            height = 1000;
             fontColor = new SolidBrush(Color.FromArgb(255, cp.r, cp.g, cp.b));
 
         }
@@ -367,11 +368,12 @@ namespace PSO2emergencyToDiscord
 
         public void postDaily() //日付が変わったらやるPOST
         {
-            string fn = "deilypost.png";
-            todayEventImage teImage = new todayEventImage(cp.width,height,fn,fnt,fontColor);
             DateTime dt = DateTime.Now;
             if(picturepost == true)
             {
+                string fn = "deilypost.png";
+                todayEventImage teImage = new todayEventImage(cp.width, height, fn, fnt, fontColor);
+
                 if (getEmgCount() > 0)
                 {
                     Event[] todayEvent = getEmgArr();
