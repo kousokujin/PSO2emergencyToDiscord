@@ -16,6 +16,7 @@ namespace PSO2emergencyToDiscord
         public byte r;
         public byte g;
         public byte b;
+        public byte a;
 
         public int width;
         public int field1; //本日の緊急一覧の時刻フィールドの幅

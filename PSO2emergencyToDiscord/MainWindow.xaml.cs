@@ -99,14 +99,10 @@ namespace PSO2emergencyToDiscord
 
         private void configPictureButton_Click(object sender, RoutedEventArgs e)
         {
-            if (confWin == null)
+            if (confWin == null || confWin.IsVisible == false)
             {
                 confWin = new pictureConfWin(bot);
                 confWin.Show();
-            }
-            else
-            {
-                confWin.Visibility = Visibility.Visible;
             }
         }
     }

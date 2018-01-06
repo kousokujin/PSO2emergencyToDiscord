@@ -6,29 +6,30 @@
         xmlns:local="clr-namespace:PSO2emergencyToDiscord"
         mc:Ignorable="d"
         Title="画像の設定" Height="319" Width="523.529" ResizeMode="NoResize" WindowStyle="ThreeDBorderWindow" Loaded="window_Loaded">
+
     <Grid>
         <Label Content="フォント・色の設定" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="137"/>
-        <ComboBox x:Name="fontCombo" ItemsSource="{Binding Source={x:Static Member=Fonts.SystemFontFamilies}}" Margin="59,41,204,211" RenderTransformOrigin="0,0" Padding="0" VerticalContentAlignment="Center">
+        <ComboBox x:Name="fontCombo" ItemsSource="{Binding Source={x:Static Member=Fonts.SystemFontFamilies}}" Margin="59,41,204,211" RenderTransformOrigin="0,0" Padding="0" VerticalContentAlignment="Center" SelectionChanged="fontCombo_SelectionChanged">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
-                    <Label x:Name="fontBox" Content="{Binding Source}" FontFamily="{Binding}"/>
+                    <Label x:Name="fontBox" Content="{Binding}" FontFamily="{Binding}"/>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
         <Label Content="フォント" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
         <Label Content="サイズ" HorizontalAlignment="Left" Margin="328,41,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.737,0.731"/>
-        <TextBox x:Name="fontsizebox" HorizontalAlignment="Left" Height="26" Margin="383,41,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="75" VerticalContentAlignment="Center" RenderTransformOrigin="0.453,-0.115" TextChanged="fontsizebox_TextChanged" PreviewTextInput="fontsizebox_PreviewTextInput"/>
+        <TextBox x:Name="fontsizebox" HorizontalAlignment="Left" Height="26" Margin="383,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="75" VerticalContentAlignment="Center" RenderTransformOrigin="0.453,-0.115" TextChanged="fontsizebox_TextChanged" PreviewTextInput="fontsizebox_PreviewTextInput"/>
         <Label Content="画像の横幅" HorizontalAlignment="Left" Margin="10,123,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="widthBox" HorizontalAlignment="Left" Height="23" Margin="224,126,0,0" TextWrapping="Wrap" Text="600" VerticalAlignment="Top" Width="51" VerticalContentAlignment="Center" PreviewTextInput="widthBox_PreviewTextInput" TextChanged="widthBox_TextChanged"/>
+        <TextBox x:Name="widthBox" HorizontalAlignment="Left" Height="23" Margin="224,126,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="51" VerticalContentAlignment="Center" PreviewTextInput="widthBox_PreviewTextInput" TextChanged="widthBox_TextChanged"/>
         <Label Content="本日の緊急一覧の時刻フィールドの幅" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top" Width="191"/>
-        <TextBox x:Name="field1box" HorizontalAlignment="Left" Height="23" Margin="224,157,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="51" VerticalContentAlignment="Center" PreviewTextInput="field1box_PreviewTextInput" TextChanged="field1box_TextChanged"/>
+        <TextBox x:Name="field1box" HorizontalAlignment="Left" Height="23" Margin="224,157,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="51" VerticalContentAlignment="Center" PreviewTextInput="field1box_PreviewTextInput" TextChanged="field1box_TextChanged"/>
         <Label Content="次の緊急までの残り時間フィールドの幅" HorizontalAlignment="Left" Margin="10,185,0,0" VerticalAlignment="Top" Width="191"/>
-        <TextBox x:Name="field2box" HorizontalAlignment="Left" Height="23" Margin="224,189,0,0" TextWrapping="Wrap" Text="130" VerticalAlignment="Top" Width="51" VerticalContentAlignment="Center" PreviewTextInput="field2box_PreviewTextInput" TextChanged="field2box_TextChanged"/>
+        <TextBox x:Name="field2box" HorizontalAlignment="Left" Height="23" Margin="224,189,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="51" VerticalContentAlignment="Center" PreviewTextInput="field2box_PreviewTextInput" TextChanged="field2box_TextChanged"/>
         <Label Content="次の緊急の開始時間フィールドの幅" HorizontalAlignment="Left" Height="27" Margin="10,216,0,0" VerticalAlignment="Top" Width="191"/>
-        <TextBox x:Name="field3box" HorizontalAlignment="Left" Height="23" Margin="224,220,0,0" TextWrapping="Wrap" Text="130" VerticalAlignment="Top" Width="51" VerticalContentAlignment="Center" PreviewTextInput="field3box_PreviewTextInput" TextChanged="field3box_TextChanged"/>
+        <TextBox x:Name="field3box" HorizontalAlignment="Left" Height="23" Margin="224,220,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="51" VerticalContentAlignment="Center" PreviewTextInput="field3box_PreviewTextInput" TextChanged="field3box_TextChanged"/>
         <Label Content="文字の色" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.711,0.731"/>
-        <Label Content="" HorizontalAlignment="Left" Height="20" Margin="71,87,0,0" VerticalAlignment="Top" Width="130" Foreground="#FF0C0909" Background="Black"/>
-        <Button Content="色の変更" HorizontalAlignment="Left" Margin="224,87,0,0" VerticalAlignment="Top" Width="75"/>
+        <Label x:Name="colorSample" Content="" HorizontalAlignment="Left" Height="20" Margin="71,87,0,0" VerticalAlignment="Top" Width="130" Foreground="#FF0C0909" Background="Black" BorderThickness="1" BorderBrush="Black"/>
+        <Button x:Name="colorchangebutton" Content="色の変更" HorizontalAlignment="Left" Margin="224,87,0,0" VerticalAlignment="Top" Width="75" Click="colorchangebutton_Click"/>
         <Button x:Name="OKbutton" Content="OK" HorizontalAlignment="Left" Margin="413,245,0,0" VerticalAlignment="Top" Width="75" Click="OKbutton_Click"/>
         <Button x:Name="Cancelbutton" Content="キャンセル" HorizontalAlignment="Left" Margin="328,245,0,0" VerticalAlignment="Top" Width="75" Click="Cancelbutton_Click"/>
         <Button x:Name="DailytestButton" Content="本日の緊急一覧テスト生成" HorizontalAlignment="Left" Margin="343,192,0,0" VerticalAlignment="Top" Width="145" Click="DailytestButton_Click"/>

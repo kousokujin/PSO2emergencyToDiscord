@@ -17,8 +17,8 @@ namespace PSO2emergencyToDiscord
         //画像関係
         public configPicture cp;
         int height = 1000;
-        Font fnt;
-        Brush fontColor;
+        //Font fnt;
+        //Brush fontColor;
 
         //次の緊急の情報
         Event nextEmg;
@@ -61,9 +61,9 @@ namespace PSO2emergencyToDiscord
             nextDayNtf += new TimeSpan(1, 0, 0, 0);
 
             loadPicture();
-            fnt = new Font(cp.fontname, cp.fontsize);
+            //fnt = new Font(cp.fontname, cp.fontsize);
             height = 1000;
-            fontColor = new SolidBrush(Color.FromArgb(255, cp.r, cp.g, cp.b));
+            //fontColor = new SolidBrush(Color.FromArgb(255, cp.r, cp.g, cp.b));
 
         }
 
@@ -371,6 +371,9 @@ namespace PSO2emergencyToDiscord
             DateTime dt = DateTime.Now;
             if(picturepost == true)
             {
+                Font fnt = new Font(cp.fontname, cp.fontsize);
+                Brush fontColor = new SolidBrush(Color.FromArgb(cp.a, cp.r, cp.g, cp.b));
+
                 string fn = "deilypost.png";
                 todayEventImage teImage = new todayEventImage(cp.width, height, fn, fnt, fontColor);
 
@@ -442,6 +445,9 @@ namespace PSO2emergencyToDiscord
                 if (picturepost == true)
                 {
                     string fn = "postEmg.png";
+                    Font fnt = new Font(cp.fontname, cp.fontsize);
+                    Brush fontColor = new SolidBrush(Color.FromArgb(cp.a, cp.r, cp.g, cp.b));
+
                     eventImage eImage = new eventImage(cp.width, height, fn, fnt,fontColor);
                     eImage.setParameter(cp.field2, 0, cp.field3, 0, 0);
 
@@ -466,6 +472,9 @@ namespace PSO2emergencyToDiscord
                 if (picturepost == true)
                 {
                     string fn = "postEmg.png";
+                    Font fnt = new Font(cp.fontname, cp.fontsize);
+                    Brush fontColor = new SolidBrush(Color.FromArgb(cp.a, cp.r, cp.g, cp.b));
+
                     eventImage eImage = new eventImage(cp.width, height, fn, fnt, fontColor);
                     eImage.setParameter(cp.field2, 0, cp.field3, 0, 0);
 
@@ -493,6 +502,9 @@ namespace PSO2emergencyToDiscord
             if(picturepost == true)
             {
                 string fn = "text.png";
+                Font fnt = new Font(cp.fontname, cp.fontsize);
+                Brush fontColor = new SolidBrush(Color.FromArgb(cp.a, cp.r, cp.g, cp.b));
+
                 simpleText st = new simpleText(cp.width, height, fn, fnt,fontColor);
 
                 st.drawText(str);
@@ -521,25 +533,26 @@ namespace PSO2emergencyToDiscord
             if (System.IO.File.Exists(filename) == false)
             {
                 cp = new configPicture();
-                cp.fontname = "MS ゴシック";
+                cp.fontname = "MS Gothic";
                 cp.fontsize = 20;
 
                 cp.r = 255;
                 cp.g = 255;
                 cp.b = 255;
+                cp.a = 255;
 
                 cp.width = 600;
-                cp.field1 = 100;
-                cp.field2 = 130;
-                cp.field3 = 130;
+                cp.field1 = 80;
+                cp.field2 = 150;
+                cp.field3 = 80;
 
                 xmlIO.saveObject(cp, filename);
             }
             else
             {
                 //もっといい方法がありそう
-                cp = new configPicture();
-                cp = (configPicture)xmlIO.loadObject(filename, cp.GetType());
+                configPicture copy = new configPicture();
+                cp = (configPicture)xmlIO.loadObject(filename, copy.GetType());
             }
         }
 

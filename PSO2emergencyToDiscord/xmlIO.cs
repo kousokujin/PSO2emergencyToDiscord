@@ -17,6 +17,8 @@ namespace PSO2emergencyToDiscord
 
         public static object loadObject(string filename,Type t)
         {
+            //Type t = Type.GetType(typename);
+
             System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(t);
             System.IO.StreamReader sr = new System.IO.StreamReader(filename, new System.Text.UTF8Encoding(false));
             object output = serializer.Deserialize(sr);
