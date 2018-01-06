@@ -23,6 +23,8 @@ namespace PSO2emergencyToDiscord
         public int field2; //次の緊急までの残り時間フィールドの幅
         public int field3; //次の緊急の開始時間フィールドの幅
 
+        public bool enabled;
+
         public configPicture() { }
     }
 }

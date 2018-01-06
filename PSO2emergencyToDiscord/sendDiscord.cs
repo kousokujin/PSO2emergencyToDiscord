@@ -152,6 +152,7 @@ namespace PSO2emergencyToDiscord
 
             this.url = obj.url;
 
+
             log.writeLog("設定ファイルを読み込みました。");
         }
     }

@@ -39,7 +39,7 @@ namespace PSO2emergencyToDiscord
         private bool rodosDay;  //ロドスの日かどうか
 
         //画像でのPOSTのスイッチ
-        public bool picturepost;
+        //public bool picturepost;
 
 
         public botRun(sendDiscord discord,getPSO2 PSO2)
@@ -54,7 +54,6 @@ namespace PSO2emergencyToDiscord
             //getEmg();
             Task t = asyncReloademg();
             //calcNextNofity();
-            runTime();
             //printToday();
 
             nextDayNtf = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day , 0, 0, 0);
@@ -64,6 +63,8 @@ namespace PSO2emergencyToDiscord
             //fnt = new Font(cp.fontname, cp.fontsize);
             height = 1000;
             //fontColor = new SolidBrush(Color.FromArgb(255, cp.r, cp.g, cp.b));
+
+            runTime();
 
         }
 
@@ -369,7 +370,7 @@ namespace PSO2emergencyToDiscord
         public void postDaily() //日付が変わったらやるPOST
         {
             DateTime dt = DateTime.Now;
-            if(picturepost == true)
+            if(cp.enabled == true)
             {
                 Font fnt = new Font(cp.fontname, cp.fontsize);
                 Brush fontColor = new SolidBrush(Color.FromArgb(cp.a, cp.r, cp.g, cp.b));
@@ -442,7 +443,7 @@ namespace PSO2emergencyToDiscord
         {
             if (nextInterval == 0)
             {
-                if (picturepost == true)
+                if (cp.enabled == true)
                 {
                     string fn = "postEmg.png";
                     Font fnt = new Font(cp.fontname, cp.fontsize);
@@ -469,7 +470,7 @@ namespace PSO2emergencyToDiscord
             }
             else
             {
-                if (picturepost == true)
+                if (cp.enabled == true)
                 {
                     string fn = "postEmg.png";
                     Font fnt = new Font(cp.fontname, cp.fontsize);
@@ -499,7 +500,7 @@ namespace PSO2emergencyToDiscord
 
         public void postText(string str)
         {
-            if(picturepost == true)
+            if(cp.enabled == true)
             {
                 string fn = "text.png";
                 Font fnt = new Font(cp.fontname, cp.fontsize);
@@ -545,6 +546,8 @@ namespace PSO2emergencyToDiscord
                 cp.field1 = 80;
                 cp.field2 = 150;
                 cp.field3 = 80;
+
+                cp.enabled = false;
 
                 xmlIO.saveObject(cp, filename);
             }

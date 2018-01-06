@@ -49,7 +49,7 @@ namespace PSO2emergencyToDiscord
             field3box.Text = bot.cp.field3.ToString();
 
             FontFamily src = new FontFamily(bot.cp.fontname);
-            System.Console.WriteLine(src.Source);
+            //System.Console.WriteLine(src.Source);
 
             int count = 0;
             foreach(var item in fontCombo.ItemsSource)
@@ -90,6 +90,8 @@ namespace PSO2emergencyToDiscord
             c.A = bot.cp.a;
             Brush fontColor = new SolidColorBrush(c);
             colorSample.Background = fontColor;
+
+            enabledPicture.IsChecked = bot.cp.enabled;
 
         }
 
@@ -138,6 +140,7 @@ namespace PSO2emergencyToDiscord
             bot.cp.field1 = backup.field1;
             bot.cp.field2 = backup.field2;
             bot.cp.field3 = backup.field3;
+            bot.cp.enabled = backup.enabled;
 
             //this.Visibility = Visibility.Hidden;
             this.Close();
@@ -232,6 +235,11 @@ namespace PSO2emergencyToDiscord
                 bot.cp.b = cd.Color.B;
                 bot.cp.a = cd.Color.A;
             }
+        }
+
+        private void enabledPicture_Click(object sender, RoutedEventArgs e)
+        {
+            bot.cp.enabled = (bool)enabledPicture.IsChecked;
         }
     }
 }

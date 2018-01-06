@@ -91,11 +91,13 @@ namespace PSO2emergencyToDiscord
             //System.Console.WriteLine("ロドス通知:{0}", bot.rodosNotify);
         }
 
+        /*
         private void pictureCheckBox_Click(object sender, RoutedEventArgs e)
         {
-            bot.picturepost = (bool)pictureCheckBox.IsChecked;
+            bot.cp.enabled = (bool)pictureCheckBox.IsChecked;
             //System.Console.WriteLine("画像投稿:{0}", bot.picturepost);
         }
+        */
 
         private void configPictureButton_Click(object sender, RoutedEventArgs e)
         {
