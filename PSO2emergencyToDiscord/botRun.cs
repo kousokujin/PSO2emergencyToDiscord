@@ -152,10 +152,8 @@ namespace PSO2emergencyToDiscord
 
                         if (rodosNotify == true)
                         {
-                            Task t = discord.sendContent(
-                                "デイリーオーダー「バル・ロドス討伐(VH)」の日があと30分で終わります。オーダーは受注しましたか？" + Environment.NewLine +
-                                string.Format("次回のバル・ロドス討伐(VH)の日は{0}月{1}日です。", nextRodos.Month, nextRodos.Day)
-                                );
+                                postText("デイリーオーダー「バル・ロドス討伐(VH)」の日があと30分で終わります。オーダーは受注しましたか？" + Environment.NewLine +
+                                    string.Format("次回のバル・ロドス討伐(VH)の日は{0}月{1}日です。", nextRodos.Month, nextRodos.Day));
                         }
                         rodosDay = false;   //この通知を出した時このアプリでロドスVHの日は終わる。
                     }
