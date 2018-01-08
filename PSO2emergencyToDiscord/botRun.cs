@@ -165,10 +165,13 @@ namespace PSO2emergencyToDiscord
                     {
                         reloadEmg();
                         getEmg();
+                        postDaily();
+                        /*
                         string emgStr = genEmgStr();
                         Task t = discord.sendContent(
                                     string.Format("{0}月{1}日の緊急クエストは以下の通りです。", dt.Month, dt.Day) + Environment.NewLine + emgStr
                                 );
+                        */
                     }
 
                     System.Threading.Thread.Sleep(10000);
