@@ -244,6 +244,7 @@ namespace PSO2emergencyToDiscord
 
             if(notify == false)
             {
+                nextEmg = new emgQuest(dt - new TimeSpan(1,0,0), "なし");
                 log.writeLog("通知する緊急クエストがありません。");
             }
         }
